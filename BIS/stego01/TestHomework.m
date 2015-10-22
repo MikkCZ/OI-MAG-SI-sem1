@@ -38,3 +38,6 @@ fprintf('odd pixels: %d (%.0f%%) pixels increased, %d (%.0f%%) pixels decreased\
 %show the differences
 colormap(gray);
 imagesc(abs(D));
+
+%delete files
+delete('diff.png', 'stego.png');
