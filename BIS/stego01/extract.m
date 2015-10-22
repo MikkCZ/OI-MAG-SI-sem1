@@ -4,7 +4,7 @@ function message = extract(image,key)
     image=image(:);
     
 	%init pseudorandom generator (klicem)
-    rng('default');
+    %rng('default');
 	rng(key);
     %ziskat permutaci
     perm=randperm(image_m*image_n);
