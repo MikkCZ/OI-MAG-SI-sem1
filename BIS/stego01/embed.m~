@@ -19,13 +19,23 @@ function embed(image,message,key,out_image)
     for i=1:msg_size
         index=perm(i);
         msg_char=message(i);
-        sudy=mod(image(index),2)==0;
-        %sudy->lichy || lichy->sudy
-        if (sudy && msg_char=='1') || (~sudy && msg_char=='0')
-            if rand() > 0.5
-                image(index) = image(index)+1;
-            else
-                image(index) = image(index)-1;
+        %sudy
+        if (mod(image(index),2)==0 && (msg_char=='1')) || 
+            if msg_char=='1'
+                if rand() > 0.5
+                    image(index) = image(index)+1;
+                else
+                    image(index) = image(index)-1;
+                end
+            end
+        %lichy
+        else
+            if msg_char=='0'
+                if rand() > 0.5
+                    image(index) = image(index)+1;
+                else
+                    image(index) = image(index)-1;
+                end
             end
         end
     end

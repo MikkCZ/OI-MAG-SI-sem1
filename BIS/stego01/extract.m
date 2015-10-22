@@ -12,23 +12,13 @@ function message = extract(image,key)
     %precist 32bit header = delka message
     header='';
     for i=1:32
-        index=perm(i);
-        if mod(image(index),2) == 0 %sudy
-            header=strcat(header,'0');
-        else %lichy
-            header=strcat(header,'1');
-        end
+        header=strcat(header,num2str(mod(image(perm(i)),2)));
     end
     msg_size=bin2dec(header);
     
     %precti zpravu z bitu podle permutace
     message=zeros(msg_size,1);
     for i=1:msg_size
-        index=perm(32+i);
-        if mod(image(index),2) == 0 %sudy
-            message(i)=0;
-        else %lichy
-            message(i)=1;
-        end
+        message(i)=mod(image(perm(32+i)),2);
     end
 end
