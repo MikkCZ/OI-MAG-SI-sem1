@@ -50,9 +50,9 @@ public class BackupConnection implements Task {
         }
         Arrays.sort(edges, Edge.getPriceComparator());
 
-        result.append(findMinSpanningTree()).append("\n");
+        result.append(findMinSpanningTree());
         for (Edge e : getSuitableBackupEdges()) {
-            result.append(e.toString()).append("\n");
+            result.append("\n").append(e.toString());
         }
 
         return result.toString();
