@@ -15,18 +15,30 @@ import java.io.InputStreamReader;
  */
 public class Main {
 
+    private static long lastKnownTime = System.currentTimeMillis();
+    private static final boolean DEBUG = false;
+
     /**
      * @param args the command line arguments
+     * @throws java.io.IOException
      */
     public static void main(String[] args) throws IOException {
-        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        StringBuilder sb = new StringBuilder();
+        final BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+        final StringBuilder sb = new StringBuilder();
         String line;
         while ((line = br.readLine()) != null) {
             sb.append(line).append("\n");
         }
-        Task t = new BackupConnection();
+        final Task t = new BackupConnection();
         System.out.println(t.eval(sb.toString()));
+    }
+
+    public static void printTimeDuration(String description) {
+        if (DEBUG) {
+            final long now = System.currentTimeMillis();
+            System.err.println(description + ":" + (now - lastKnownTime));
+            lastKnownTime = now;
+        }
     }
 
 }
