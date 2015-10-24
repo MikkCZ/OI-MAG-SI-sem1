@@ -9,7 +9,10 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Queue;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -46,6 +49,7 @@ public class BackupConnectionTest {
     public void testEval() {
         File folder = new File("./src/main/resources/datapub");
         File[] listOfFiles = folder.listFiles();
+        Arrays.sort(listOfFiles);
         Queue<File> inputFiles = new LinkedList();
         Queue<File> outputFiles = new LinkedList();
 
@@ -60,6 +64,8 @@ public class BackupConnectionTest {
                 outputFiles.add(f);
             }
         }
+        Collections.sort((List<File>) inputFiles);
+        Collections.sort((List<File>) outputFiles);
 
         for (File inputFile : inputFiles) {
             try {
