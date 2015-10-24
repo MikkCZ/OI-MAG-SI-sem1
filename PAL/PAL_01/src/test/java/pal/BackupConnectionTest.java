@@ -82,10 +82,12 @@ public class BackupConnectionTest {
     private String readFile(File f) throws IOException {
         try (BufferedReader br = new BufferedReader(new FileReader(f))) {
             StringBuilder sb = new StringBuilder();
+            String prefix = "";
             String line = br.readLine();
             while (line != null) {
-                sb.append(line).append("\n");
+                sb.append(prefix).append(line);
                 line = br.readLine();
+                prefix = "\n";
             }
             return sb.toString();
         }
