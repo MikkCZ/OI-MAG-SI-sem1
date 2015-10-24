@@ -11,7 +11,7 @@ import java.util.Comparator;
  *
  * @author Michal Stanke <michal.stanke@mikk.cz>
  */
-public class Edge implements Comparable<Edge> {
+public class Edge {
 
     public static final int BEFORE = -1, EQUAL = 0, AFTER = 1;
     private final int a_node, b_node, price;
@@ -37,20 +37,6 @@ public class Edge implements Comparable<Edge> {
 
     public int getPrice() {
         return price;
-    }
-
-    @Override
-    public int compareTo(final Edge other) {
-        if (this == other) {
-            return EQUAL;
-        }
-        if (this.price == other.price) {
-            return EQUAL;
-        } else if (this.price < other.price) {
-            return BEFORE;
-        } else {
-            return AFTER;
-        }
     }
 
     @Override

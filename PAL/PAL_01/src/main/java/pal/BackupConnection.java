@@ -8,7 +8,6 @@ package pal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -29,32 +28,41 @@ public class BackupConnection implements Task {
 
     @Override
     public String eval(final String stdin) {
-        String[] input = stdin.split("\n");
-        initGraphInfo(input[0]);
+        Main.printTimeDuration("start");
+        String[] input = stdin.split("[ \n]+");
+        N = Integer.parseInt(input[0]);
+        M = Integer.parseInt(input[1]);
+        C1 = Integer.parseInt(input[2]);
+        C2 = Integer.parseInt(input[3]);
 
         nodes = new int[N][2];
         for (int i = 0; i < N; i++) {
             nodes[i][representative] = i;
         }
 
+        Main.printTimeDuration("Nodes allocation");
         edges = new Edge[M];
         backupEdges = new ArrayList<>(M);
-        String[] tmp;
+        //String[] tmp;
+        int iIndex=4;
         for (int i = 0; i < M; i++) {
-            tmp = input[i + 1].split(" ");
+            //tmp = input[i + 1].split(" ");
             edges[i] = new Edge(
-                    Integer.parseInt(tmp[0]),
-                    Integer.parseInt(tmp[1]),
-                    Integer.parseInt(tmp[2])
+                    Integer.parseInt(input[iIndex++]),
+                    Integer.parseInt(input[iIndex++]),
+                    Integer.parseInt(input[iIndex++])
             );
         }
+        Main.printTimeDuration("Edges allocation");
         Arrays.sort(edges, Edge.getPriceComparator());
 
+        Main.printTimeDuration("Edges sort");
         result.append(findMinSpanningTree());
+        Main.printTimeDuration("Spanning Tree");
         for (Edge e : getSuitableBackupEdges()) {
             result.append("\n").append(e.toString());
         }
-
+        Main.printTimeDuration("Backup Edges");
         return result.toString();
     }
 
@@ -73,11 +81,13 @@ public class BackupConnection implements Task {
         nodesAdded += 2;
         price += edges[0].getPrice();
         // find spanning tree
+        Edge e;
+        int aRep, bRep;
         int i = 1;
         for (; nodesAdded < N; i++) {
-            Edge e = edges[i];
-            int aRep = findRepresentative(e.getANode());
-            int bRep = findRepresentative(e.getBNode());
+            e = edges[i];
+            aRep = findRepresentative(e.getANode());
+            bRep = findRepresentative(e.getBNode());
 
             if (aRep != bRep && union(aRep, bRep)) { // ruzne komponenty
                 nodesAdded++;
@@ -88,7 +98,7 @@ public class BackupConnection implements Task {
         }
         // find more backup egdes
         for (; i < M; i++) {
-            Edge e = edges[i];
+            e = edges[i];
             if (e.getPrice() > C2) {
                 break;
             }
@@ -147,10 +157,11 @@ public class BackupConnection implements Task {
     }
 
     private List<Edge> getSuitableBackupEdges() {
-        List<Edge> suitable = new LinkedList<>();
+        List<Edge> suitable = new ArrayList<>(backupEdges.size());
+        int a, b;
         for (Edge e : backupEdges) {
-            int a = findRepresentative(e.getANode());
-            int b = findRepresentative(e.getBNode());
+            a = findRepresentative(e.getANode());
+            b = findRepresentative(e.getBNode());
             if ((a != b)
                     && (a == firstA || a == firstB)
                     && (b == firstA || b == firstB)) { // jsou z prvni hrany
