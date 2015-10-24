@@ -16,6 +16,7 @@ function embed(image,message,key,out_image)
     
     %embeduj vse na pozice podle permutace
     %TODO:pridat ochranu proti preteceni?
+    %TODO:zbavit se for-cyklu
     for i=1:msg_size
         index=perm(i);
         msg_char=message(i);
