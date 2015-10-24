@@ -69,9 +69,12 @@ public class BackupConnectionTest {
 
         for (File inputFile : inputFiles) {
             try {
+                this.setUp();
                 testFile(inputFile.getName(), readFile(inputFile), readFile(outputFiles.poll()));
             } catch (IOException ex) {
                 Logger.getLogger(BackupConnectionTest.class.getName()).log(Level.SEVERE, null, ex);
+            } finally {
+                this.tearDown();
             }
         }
     }
