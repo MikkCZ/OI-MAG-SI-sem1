@@ -7,8 +7,10 @@ package pal;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedList;
@@ -38,8 +40,8 @@ public class BackupConnectionTest {
         t = null;
     }
 
-    private void testFile(String fName, String input, String output) {
-        assertEquals("Wrong solution for " + fName + ".", output, t.eval(input));
+    private void testFile(String fName, InputStream is, String output) throws IOException {
+        assertEquals("Wrong solution for " + fName + ".", output, t.eval(is));
     }
 
     /**
@@ -70,7 +72,7 @@ public class BackupConnectionTest {
         for (File inputFile : inputFiles) {
             try {
                 this.setUp();
-                testFile(inputFile.getName(), readFile(inputFile), readFile(outputFiles.poll()));
+                testFile(inputFile.getName(), new FileInputStream(inputFile), readFile(outputFiles.poll()));
             } catch (IOException ex) {
                 Logger.getLogger(BackupConnectionTest.class.getName()).log(Level.SEVERE, null, ex);
             } finally {

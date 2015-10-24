@@ -5,9 +5,7 @@
  */
 package pal;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 
 /**
  *
@@ -23,14 +21,8 @@ public class Main {
      * @throws java.io.IOException
      */
     public static void main(String[] args) throws IOException {
-        final BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        final StringBuilder sb = new StringBuilder();
-        String line;
-        while ((line = br.readLine()) != null) {
-            sb.append(line).append("\n");
-        }
         final Task t = new BackupConnection();
-        System.out.println(t.eval(sb.toString()));
+        System.out.println(t.eval(System.in));
     }
 
     public static void printTimeDuration(String description) {
