@@ -9,7 +9,6 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.StreamTokenizer;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -34,13 +33,13 @@ public class BackupConnection implements Task {
         Main.printTimeDuration("Start");
 
         int[] input = new int[3 * 1300000];
-        StreamTokenizer st = new StreamTokenizer(new BufferedReader(new InputStreamReader(is)));
-        //st.resetSyntax();
-        st.parseNumbers();
-        st.eolIsSignificant(false);
+        BufferedReader br = new BufferedReader(new InputStreamReader(is));
         int j = 0;
-        while (st.nextToken() == StreamTokenizer.TT_NUMBER) {
-            input[j++] = (int) st.nval;
+        String line;
+        while ((line = br.readLine()) != null) {
+            for (String s : line.split(" ")) {
+                input[j++] = Integer.parseInt(s);
+            }
         }
         Main.printTimeDuration("Reading input");
 
