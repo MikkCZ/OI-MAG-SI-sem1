@@ -44,14 +44,14 @@ public class ReverseEdge implements Task {
         }
         Main.printTimeDuration("Reading input");
 
-        List<Node> topolNodes = createTopol();
+        createTopol();
         Main.printTimeDuration("Topol order");
 
         int max = -1;
         List<Edge> maxEdges = new ArrayList<>(M);
         for (Edge e : edges) {
             int weight = getCWeight(e);
-            if(weight == max) {
+            if (weight == max) {
                 maxEdges.add(e);
             } else if (weight > max) {
                 max = weight;
@@ -61,7 +61,7 @@ public class ReverseEdge implements Task {
         }
         Main.printTimeDuration("C sets");
 
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return maxEdges.get(0).toString() + " " + max;
     }
 
     private List<Node> createTopol() {
@@ -89,9 +89,11 @@ public class ReverseEdge implements Task {
         pred.addAll(parentPred);
 
         Set<Node> nasl = n.getNasl();
+        Set<Node> childNasl = new HashSet<>(2 * N);
         for (Node child : nasl) {
-            nasl.addAll(dfs(child, pred));
+            childNasl.addAll(dfs(child, pred));
         }
+        nasl.addAll(childNasl);
         return nasl;
     }
 
@@ -102,8 +104,11 @@ public class ReverseEdge implements Task {
         c.addAll(startNasl);
         c.retainAll(targetPred);
         int weight = 0;
-        for(Node n : c) {
-            weight+=n.getWeight();
+        for (Node n : c) {
+            weight += n.getWeight();
+        }
+        if (weight > 0) {
+            weight += e.getStart().getWeight() + e.getTarget().getWeight();
         }
         return weight;
     }

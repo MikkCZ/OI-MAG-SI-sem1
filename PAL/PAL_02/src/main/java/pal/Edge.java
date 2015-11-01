@@ -26,4 +26,9 @@ public class Edge {
         return target;
     }
 
+    @Override
+    public String toString() {
+        return String.format("%1$d %2$d", start.getName(), target.getName());
+    }
+
 }

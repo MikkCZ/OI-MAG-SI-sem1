@@ -20,7 +20,11 @@ public class Node {
         this.NASL = new HashSet<>(2 * total);
         this.PRED = new HashSet<>(2 * total);
     }
-    
+
+    public int getName() {
+        return name;
+    }
+
     public int getWeight() {
         return weight;
     }
@@ -36,7 +40,7 @@ public class Node {
     public boolean addPRED(Node n) {
         return PRED.add(n);
     }
-    
+
     public Set<Node> getPred() {
         return PRED;
     }
@@ -69,6 +73,11 @@ public class Node {
             return false;
         }
         return true;
+    }
+
+    @Override
+    public String toString() {
+        return "Node{" + "name=" + name + ", weight=" + weight + '}';
     }
 
     public static Comparator<Node> getTopolComparator() {
