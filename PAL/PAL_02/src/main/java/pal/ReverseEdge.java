@@ -40,23 +40,24 @@ public class ReverseEdge implements Task {
         }
         Main.printTimeDuration("Reading input + graph init");
 
-        topolSort();
+        Node[] tmpNodeArray = new Node[N];
+        topolSort(tmpNodeArray);
         Main.printTimeDuration("Topol order");
 
         for (int i = 0; i < N; i++) {
-            nodes[i].initNasl();
+            nodes[i].initNasl(tmpNodeArray);
         }
         for (int i = N - 1; i >= 0; i--) {
-            nodes[i].initPred();
+            nodes[i].initPred(tmpNodeArray);
         }
         Main.printTimeDuration("Init NASL and PRED");
 
         int weight;
         int max = -1;
-        Edge[] maxEdges = new Edge[N];
+        Edge[] maxEdges = new Edge[M];
         int maxEdgesCounter = 0;
         for (Edge e : edges) {
-            weight = getCWeight(e);
+            weight = getCWeight(e, tmpNodeArray);
             if (weight == max) {
                 maxEdges[maxEdgesCounter++] = e;
             } else if (weight > max) {
@@ -72,8 +73,7 @@ public class ReverseEdge implements Task {
         return maxEdges[0].toString() + " " + max;
     }
 
-    private void topolSort() {
-        Node[] roots = new Node[N];
+    private void topolSort(Node[] tmpArray) {
         int rootsCounter = 0;
         int[] nodeState = new int[N];
 //        for (int i = 0; i < N; i++) {
@@ -81,11 +81,11 @@ public class ReverseEdge implements Task {
 //        }
         for (Node n : nodes) {
             if (n.emptyPred()) {
-                roots[rootsCounter++] = n;
+                tmpArray[rootsCounter++] = n;
             }
         }
         for (int i = 0; i < rootsCounter; i++) {
-            visitNode(roots[i], nodeState);
+            visitNode(tmpArray[i], nodeState);
         }
     }
 
@@ -105,9 +105,11 @@ public class ReverseEdge implements Task {
         nodeState[node.getName()] = CLOSED;
     }
 
-    private int getCWeight(Edge e) {
+    private int getCWeight(Edge e, Node[] tmpArray) {
         int weight = 0;
-        for (Node n : getIntersection(e.getStart(), e.getTarget())) {
+        int intersectionCount = getIntersection(e.getStart(), e.getTarget(), tmpArray);
+        for (int i = 0; i < intersectionCount; i++) {
+            Node n = tmpArray[i];
             if (n == null) {
                 break;
             }
@@ -119,18 +121,17 @@ public class ReverseEdge implements Task {
         return weight;
     }
 
-    private Node[] getIntersection(Node parent, Node child) {
-        Node[] intersection = new Node[N];
+    private int getIntersection(Node parent, Node child, Node[] target) {
         int intersectionCounter = 0;
         for (Node n : parent.getNasl()) {
             if (n == null) {
                 break;
             }
             if (child.hasPred(n)) {
-                intersection[intersectionCounter++] = n;
+                target[intersectionCounter++] = n;
             }
         }
-        return intersection;
+        return intersectionCounter;
     }
 
 }

@@ -7,7 +7,7 @@ package pal;
 public class Node {
 
     public static final int BEFORE = -1, EQUAL = 0, AFTER = 1;
-    private final int name, weight, N;
+    private final int name, weight;
     private final Node[] nasl;
     private final Node[] pred;
     private int naslCounter = 0, predCounter = 0;
@@ -17,7 +17,6 @@ public class Node {
     public Node(int name, int weight, int N) {
         this.name = name;
         this.weight = weight;
-        this.N = N;
         this.nasl = new Node[N];
         this.pred = new Node[N];
         this.hasNasl = new boolean[N];
@@ -43,9 +42,8 @@ public class Node {
         }
     }
 
-    public void initNasl() {
+    public void initNasl(Node[] tmpArray) {
         if (!naslInited) {
-            Node[] toAdd = new Node[N];
             int toAddCounter = 0;
             for (Node n : this.nasl) {
                 if (n == null) {
@@ -56,13 +54,13 @@ public class Node {
                         break;
                     }
                     if (!this.hasNasl(m)) {
-                        toAdd[toAddCounter++] = m;
+                        tmpArray[toAddCounter++] = m;
                         this.hasNasl[m.getName()] = true;
                     }
                 }
             }
             for (int i = 0; i < toAddCounter; i++) {
-                nasl[naslCounter++] = toAdd[i];
+                nasl[naslCounter++] = tmpArray[i];
             }
             naslInited = true;
         }
@@ -83,27 +81,25 @@ public class Node {
         }
     }
 
-    public void initPred() {
+    public void initPred(Node[] tmpArray) {
         if (!predInited) {
-            Node[] toAdd = new Node[N];
             int toAddCounter = 0;
             for (Node n : this.pred) {
                 if (n == null) {
                     break;
                 }
-                n.initPred();
                 for (Node m : n.pred) {
                     if (m == null) {
                         break;
                     }
                     if (!this.hasPred(m)) {
-                        toAdd[toAddCounter++] = m;
+                        tmpArray[toAddCounter++] = m;
                         this.hasPred[m.getName()] = true;
                     }
                 }
             }
             for (int i = 0; i < toAddCounter; i++) {
-                pred[predCounter++] = toAdd[i];
+                pred[predCounter++] = tmpArray[i];
             }
             predInited = true;
         }
