@@ -5,18 +5,15 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 public class ReverseEdge implements Task {
 
     private int N, M;
     private Node[] nodes;
     private List<Edge> edges;
-    private Map<Edge, Set<Node>> C;
 
     @Override
     public String eval(final InputStream is) throws IOException {
@@ -44,11 +41,12 @@ public class ReverseEdge implements Task {
         }
         Main.printTimeDuration("Reading input + graph init");
 
-        Set<Node> emptySet = new HashSet<>(1);
-        for (Node n : nodes) {
-            n.initAllNaslPred(emptySet);
-        }
+        topolSort();
         Main.printTimeDuration("Topol order");
+
+        for (int i = N - 1; i >= 0; i--) {
+            nodes[i].initPred();
+        }
 
         int weight;
         int max = -1;
@@ -70,20 +68,33 @@ public class ReverseEdge implements Task {
         return maxEdges.get(0).toString() + " " + max;
     }
 
+    private void topolSort() {
+        for (Node n : nodes) {
+            n.initNasl();
+        }
+        Arrays.sort(nodes, Node.getTopolNaslComparator());
+    }
+
     private int getCWeight(Edge e) {
-        Set<Node> startNasl = e.getStart().getNasl();
-        Set<Node> targetPred = e.getTarget().getPred();
-        Set<Node> c = new HashSet<>(2 * N);
-        c.addAll(startNasl);
-        c.retainAll(targetPred);
+        List<Node> c = getIntersection(e.getStart(), e.getTarget());
         int weight = 0;
-        if (!c.isEmpty()) {
-            for (Node n : c) {
-                weight += n.getWeight();
-            }
+        for (Node n : c) {
+            weight += n.getWeight();
+        }
+        if (weight > 0) {
             weight += e.getStart().getWeight() + e.getTarget().getWeight();
         }
         return weight;
+    }
+
+    private List<Node> getIntersection(Node parent, Node child) {
+        List<Node> intersection = new ArrayList<>(N);
+        for (Node n : parent.getNasl()) {
+            if (child.hasPred(n)) {
+                intersection.add(n);
+            }
+        }
+        return intersection;
     }
 
 }
