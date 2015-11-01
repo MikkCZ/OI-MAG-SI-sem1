@@ -9,6 +9,6 @@ import java.io.InputStream;
  */
 public interface Task {
 
-    public String eval(InputStream stdin) throws IOException;
+    public String eval(InputStream is) throws IOException;
 
 }
