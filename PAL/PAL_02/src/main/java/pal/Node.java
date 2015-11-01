@@ -1,7 +1,6 @@
 package pal;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Arrays;
 
 /**
  *
@@ -11,7 +10,9 @@ public class Node {
 
     public static final int BEFORE = -1, EQUAL = 0, AFTER = 1;
     private final int name, weight, N;
-    private final List<Node> nasl, pred;
+    private final Node[] nasl;
+    private final Node[] pred;
+    private int naslCounter = 0, predCounter = 0;
     private final boolean[] hasNasl, hasPred;
     private boolean naslInited = false, predInited = false;
 
@@ -19,8 +20,8 @@ public class Node {
         this.name = name;
         this.weight = weight;
         this.N = N;
-        this.nasl = new ArrayList<>(N);
-        this.pred = new ArrayList<>(N);
+        this.nasl = new Node[N];
+        this.pred = new Node[N];
         this.hasNasl = new boolean[N];
         this.hasPred = new boolean[N];
     }
@@ -39,29 +40,38 @@ public class Node {
 
     public void addNasl(Node n) {
         if (!hasNasl(n)) {
-            nasl.add(n);
+            nasl[naslCounter++] = n;
             hasNasl[n.getName()] = true;
         }
     }
 
     public void initNasl() {
         if (!naslInited) {
-            List<Node> toAdd = new ArrayList<>(N);
+            Node[] toAdd = new Node[N];
+            int toAddCounter = 0;
             for (Node n : this.nasl) {
-                for (Node m : n.getNasl()) {
+                if (n == null) {
+                    break;
+                }
+                for (Node m : n.nasl) {
+                    if (m == null) {
+                        break;
+                    }
                     if (!this.hasNasl(m)) {
-                        toAdd.add(m);
+                        toAdd[toAddCounter++] = m;
                         this.hasNasl[m.getName()] = true;
                     }
                 }
             }
-            this.nasl.addAll(toAdd);
+            for (int i = 0; i < toAddCounter; i++) {
+                nasl[naslCounter++] = toAdd[i];
+            }
             naslInited = true;
         }
     }
 
-    public List<Node> getNasl() {
-        return nasl;
+    public Node[] getNasl() {
+        return Arrays.copyOfRange(nasl, 0, naslCounter);
     }
 
     public boolean hasPred(Node n) {
@@ -70,29 +80,38 @@ public class Node {
 
     public void addPred(Node n) {
         if (!hasPred(n)) {
-            pred.add(n);
+            pred[predCounter++] = n;
             hasPred[n.getName()] = true;
         }
     }
 
     public void initPred() {
         if (!predInited) {
-            List<Node> toAdd = new ArrayList<>(N);
+            Node[] toAdd = new Node[N];
+            int toAddCounter = 0;
             for (Node n : this.pred) {
+                if (n == null) {
+                    break;
+                }
                 n.initPred();
-                for (Node m : n.getPred()) {
+                for (Node m : n.pred) {
+                    if (m == null) {
+                        break;
+                    }
                     if (!this.hasPred(m)) {
-                        toAdd.add(m);
+                        toAdd[toAddCounter++] = m;
                         this.hasPred[m.getName()] = true;
                     }
                 }
             }
-            this.pred.addAll(toAdd);
+            for (int i = 0; i < toAddCounter; i++) {
+                pred[predCounter++] = toAdd[i];
+            }
             predInited = true;
         }
     }
 
-    public List<Node> getPred() {
-        return pred;
+    public boolean emptyPred() {
+        return this.predCounter == 0;
     }
 }
