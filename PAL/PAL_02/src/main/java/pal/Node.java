@@ -1,7 +1,6 @@
 package pal;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -49,7 +48,6 @@ public class Node {
         if (!naslInited) {
             List<Node> toAdd = new ArrayList<>(N);
             for (Node n : this.nasl) {
-                n.initNasl();
                 for (Node m : n.getNasl()) {
                     if (!this.hasNasl(m)) {
                         toAdd.add(m);
@@ -96,29 +94,5 @@ public class Node {
 
     public List<Node> getPred() {
         return pred;
-    }
-
-    @Override
-    public String toString() {
-        return "Node{" + "name=" + name + '}';
-    }
-
-    public static Comparator<Node> getTopolNaslComparator() {
-        return new TopolNaslComparator<>();
-    }
-
-    private static class TopolNaslComparator<T extends Node> implements Comparator<T> {
-
-        @Override
-        public int compare(T arg0, T arg1) {
-            if (arg0.hasNasl(arg1)) {
-                return BEFORE;
-            } else if (arg1.hasNasl(arg0)) {
-                return AFTER;
-            } else {
-                return EQUAL;
-            }
-        }
-
     }
 }

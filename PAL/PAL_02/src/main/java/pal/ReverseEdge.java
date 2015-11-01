@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -41,12 +40,16 @@ public class ReverseEdge implements Task {
         }
         Main.printTimeDuration("Reading input + graph init");
 
-        topolSort();
+        List<Node> topolSortedNodes = topolSort();
         Main.printTimeDuration("Topol order");
 
-        for (int i = N - 1; i >= 0; i--) {
-            nodes[i].initPred();
+        for (int i = 0; i < N; i++) {
+            topolSortedNodes.get(i).initNasl();
         }
+        for (int i = N - 1; i >= 0; i--) {
+            topolSortedNodes.get(i).initPred();
+        }
+        Main.printTimeDuration("Init NASL and PRED");
 
         int weight;
         int max = -1;
@@ -68,11 +71,38 @@ public class ReverseEdge implements Task {
         return maxEdges.get(0).toString() + " " + max;
     }
 
-    private void topolSort() {
-        for (Node n : nodes) {
-            n.initNasl();
+    private List<Node> topolSort() {
+        List<Node> roots = new ArrayList<>(N);
+        final int FRESH = 0, OPENED = 1, CLOSED = 2;
+        int[] nodeState = new int[N];
+        for (int i = 0; i < N; i++) {
+            nodeState[i] = FRESH;
         }
-        Arrays.sort(nodes, Node.getTopolNaslComparator());
+        for (Node n : nodes) {
+            if (n.getPred().isEmpty()) {
+                roots.add(n);
+            }
+        }
+        List<Node> sorted = new ArrayList<>(N);
+        for (Node root : roots) {
+            visitNode(root, nodeState, sorted);
+        }
+        return sorted;
+        //Arrays.sort(nodes, Node.getTopolNaslComparator());
+    }
+
+    private void visitNode(Node node, int[] nodeState, List<Node> sorted) {
+        final int FRESH = 0, OPENED = 1, CLOSED = 2;
+        nodeState[node.getName()] = OPENED;
+        for (Node n : node.getNasl()) {
+            if (nodeState[n.getName()] == FRESH) {
+                visitNode(n, nodeState, sorted);
+            } else if (nodeState[n.getName()] == OPENED) {
+                throw new RuntimeException("This graph is not acyclic.");
+            }
+        }
+        sorted.add(node);
+        nodeState[node.getName()] = CLOSED;
     }
 
     private int getCWeight(Edge e) {

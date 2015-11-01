@@ -36,18 +36,6 @@ public class TaskTest {
     }
 
     private void testFile(String fName, InputStream is, String output) throws IOException {
-//        if (!"pub05.in".equals(fName)
-//                && !"pub06.in".equals(fName)
-//                && !"pub08.in".equals(fName)
-//                && !"pub09.in".equals(fName)) {
-//            return;
-//        }
-        if ("pub05.in".equals(fName)
-                || "pub06.in".equals(fName)
-                || "pub08.in".equals(fName)
-                || "pub09.in".equals(fName)) {
-            return;
-        }
         assertEquals("Wrong solution for " + fName + ".", output, t.eval(is));
     }
 
