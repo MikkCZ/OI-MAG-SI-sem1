@@ -1,7 +1,5 @@
 package pal;
 
-import java.util.Arrays;
-
 /**
  *
  * @author Michal Stanke <michal.stanke@mikk.cz>
@@ -71,7 +69,7 @@ public class Node {
     }
 
     public Node[] getNasl() {
-        return Arrays.copyOfRange(nasl, 0, naslCounter);
+        return nasl;
     }
 
     public boolean hasPred(Node n) {

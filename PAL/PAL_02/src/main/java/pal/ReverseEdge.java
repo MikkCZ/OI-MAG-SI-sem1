@@ -92,6 +92,9 @@ public class ReverseEdge implements Task {
     private void visitNode(Node node, int[] nodeState) {
 //        nodeState[node.getName()] = OPENED;
         for (Node n : node.getNasl()) {
+            if (n == null) {
+                break;
+            }
             if (nodeState[n.getName()] == FRESH) {
                 visitNode(n, nodeState);
 //            } else if (nodeState[n.getName()] == OPENED) {
@@ -120,6 +123,9 @@ public class ReverseEdge implements Task {
         Node[] intersection = new Node[N];
         int intersectionCounter = 0;
         for (Node n : parent.getNasl()) {
+            if (n == null) {
+                break;
+            }
             if (child.hasPred(n)) {
                 intersection[intersectionCounter++] = n;
             }
