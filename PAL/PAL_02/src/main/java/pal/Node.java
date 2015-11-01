@@ -11,14 +11,16 @@ import java.util.Set;
 public class Node {
 
     public static final int BEFORE = -1, EQUAL = 0, AFTER = 1;
-    private final int name, weight;
+    private final int name, weight, N;
     private final Set<Node> NASL, PRED;
+    private boolean naslInited = false;
 
-    public Node(int name, int weight, int total) {
+    public Node(int name, int weight, int N) {
         this.name = name;
         this.weight = weight;
-        this.NASL = new HashSet<>(2 * total);
-        this.PRED = new HashSet<>(2 * total);
+        this.N = N;
+        this.NASL = new HashSet<>(2 * N);
+        this.PRED = new HashSet<>(2 * N);
     }
 
     public int getName() {
@@ -29,31 +31,32 @@ public class Node {
         return weight;
     }
 
-    public boolean addNASL(Node n) {
-        return NASL.add(n);
+    public void initAllNaslPred(Set<Node> parentPred) {
+        PRED.addAll(parentPred);
+        if (!naslInited && !NASL.isEmpty()) {
+            Set<Node> newNasl = new HashSet<>(2 * N);
+            for (Node n : NASL) {
+                n.initAllNaslPred(PRED);
+                newNasl.addAll(n.NASL);
+            }
+            NASL.addAll(newNasl);
+        }
+        naslInited = true;
     }
 
     public Set<Node> getNasl() {
         return NASL;
     }
 
-    public boolean addPRED(Node n) {
-        return PRED.add(n);
-    }
-
     public Set<Node> getPred() {
         return PRED;
     }
 
-    public int predNum() {
-        return PRED.size();
-    }
-
     @Override
     public int hashCode() {
-        int hash = 3;
-        hash = 47 * hash + this.name;
-        hash = 47 * hash + this.weight;
+        int hash = 5;
+        hash = 83 * hash + this.name;
+        hash = 83 * hash + this.weight;
         return hash;
     }
 
@@ -75,25 +78,33 @@ public class Node {
         return true;
     }
 
-    @Override
-    public String toString() {
-        return "Node{" + "name=" + name + ", weight=" + weight + '}';
-    }
-
-    public static Comparator<Node> getTopolComparator() {
-        return new TopolComparator<>();
+    public static Comparator<Node> getTopolComparator(int nodes) {
+        return new TopolComparator<>(nodes);
     }
 
     private static class TopolComparator<T extends Node> implements Comparator<T> {
+
+        private final boolean isNasl[][];
+
+        public TopolComparator(int nodes) {
+            isNasl = new boolean[nodes][nodes];
+        }
 
         @Override
         public int compare(T arg0, T arg1) {
             if (arg0 == arg1) {
                 return EQUAL;
             }
+            if (isNasl[arg0.getName()][arg1.getName()]) {
+                return BEFORE;
+            } else if (isNasl[arg1.getName()][arg0.getName()]) {
+                return AFTER;
+            }
             if (arg0.getNasl().contains(arg1)) {
+                isNasl[arg0.getName()][arg1.getName()] = true;
                 return BEFORE;
             } else if (arg1.getNasl().contains(arg0)) {
+                isNasl[arg1.getName()][arg0.getName()] = true;
                 return AFTER;
             } else {
                 return EQUAL;

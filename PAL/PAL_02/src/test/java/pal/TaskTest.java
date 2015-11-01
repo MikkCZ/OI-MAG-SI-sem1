@@ -36,6 +36,9 @@ public class TaskTest {
     }
 
     private void testFile(String fName, InputStream is, String output) throws IOException {
+//        if(!"pub01.in".equals(fName)&&!"pub02.in".equals(fName)&&!"pub03.in".equals(fName)) {
+//            return;
+//        }
         assertEquals("Wrong solution for " + fName + ".", output, t.eval(is));
     }
 

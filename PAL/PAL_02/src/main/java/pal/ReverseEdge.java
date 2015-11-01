@@ -31,26 +31,30 @@ public class ReverseEdge implements Task {
         nodes = new Node[N];
         for (int i = 0; i < N; i++) {
             line = br.readLine();
-            int weight = Integer.parseInt(line.trim());
-            nodes[i] = new Node(i, weight, N);
+            nodes[i] = new Node(i, Integer.parseInt(line.trim()), N);
         }
 
         edges = new ArrayList<>(M);
         for (int i = 0; i < M; i++) {
             line = br.readLine();
-            int start = Integer.parseInt(line.split(" ")[0]);
-            int target = Integer.parseInt(line.split(" ")[1]);
-            edges.add(new Edge(nodes[start], nodes[target]));
+            edges.add(new Edge(
+                    nodes[Integer.parseInt(line.split(" ")[0])],
+                    nodes[Integer.parseInt(line.split(" ")[1])])
+            );
         }
-        Main.printTimeDuration("Reading input");
+        Main.printTimeDuration("Reading input + graph init");
 
-        createTopol();
+        Set<Node> emptySet = new HashSet<>(1);
+        for (Node n : nodes) {
+            n.initAllNaslPred(emptySet);
+        }
         Main.printTimeDuration("Topol order");
 
+        int weight;
         int max = -1;
         List<Edge> maxEdges = new ArrayList<>(M);
         for (Edge e : edges) {
-            int weight = getCWeight(e);
+            weight = getCWeight(e);
             if (weight == max) {
                 maxEdges.add(e);
             } else if (weight > max) {
@@ -60,41 +64,10 @@ public class ReverseEdge implements Task {
             }
         }
         Main.printTimeDuration("C sets");
+        Collections.sort(maxEdges, Edge.getLexicographicalComparator());
+        Main.printTimeDuration("C sets sort");
 
         return maxEdges.get(0).toString() + " " + max;
-    }
-
-    private List<Node> createTopol() {
-        for (Edge e : edges) {
-            Node start = e.getStart();
-            Node target = e.getTarget();
-            start.addNASL(target);
-            target.addPRED(start);
-        }
-        for (Node n : nodes) {
-            if (n.predNum() == 0) {
-                dfs(n, new HashSet<Node>(1));
-            }
-        }
-        List<Node> topolNodes = new ArrayList<>(N);
-        for (Node n : nodes) {
-            topolNodes.add(n);
-        }
-        Collections.sort(topolNodes, Node.getTopolComparator());
-        return topolNodes;
-    }
-
-    private Set<Node> dfs(Node n, Set<Node> parentPred) {
-        Set<Node> pred = n.getPred();
-        pred.addAll(parentPred);
-
-        Set<Node> nasl = n.getNasl();
-        Set<Node> childNasl = new HashSet<>(2 * N);
-        for (Node child : nasl) {
-            childNasl.addAll(dfs(child, pred));
-        }
-        nasl.addAll(childNasl);
-        return nasl;
     }
 
     private int getCWeight(Edge e) {
@@ -104,10 +77,10 @@ public class ReverseEdge implements Task {
         c.addAll(startNasl);
         c.retainAll(targetPred);
         int weight = 0;
-        for (Node n : c) {
-            weight += n.getWeight();
-        }
-        if (weight > 0) {
+        if (!c.isEmpty()) {
+            for (Node n : c) {
+                weight += n.getWeight();
+            }
             weight += e.getStart().getWeight() + e.getTarget().getWeight();
         }
         return weight;
