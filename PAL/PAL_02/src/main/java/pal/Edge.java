@@ -15,7 +15,7 @@ public class Edge {
         this.start = start;
         this.target = target;
         this.start.addNasl(target);
-        this.target.addPred(start);
+//        this.target.addPred(start);
     }
 
     public Node getStart() {

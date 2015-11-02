@@ -13,6 +13,7 @@ public class ReverseEdge implements Task {
     private Node[] nodes;
     private Edge[] edges;
     private int topolSortedCounter = 0;
+    private boolean[][] hasNasl, hasPred;
 
     @Override
     public String eval(final InputStream is) throws IOException {
@@ -23,11 +24,13 @@ public class ReverseEdge implements Task {
         String line = br.readLine();
         N = Integer.parseInt(line.split(" ")[0]);
         M = Integer.parseInt(line.split(" ")[1]);
+        hasNasl = new boolean[N][N];
+        hasPred = new boolean[N][N];
 
         nodes = new Node[N];
         for (int i = 0; i < N; i++) {
             line = br.readLine();
-            nodes[i] = new Node(i, Integer.parseInt(line.trim()), N);
+            nodes[i] = new Node(i, Integer.parseInt(line.trim()), N, hasNasl);
         }
 
         edges = new Edge[M];
@@ -38,6 +41,8 @@ public class ReverseEdge implements Task {
                     nodes[Integer.parseInt(line.split(" ")[1])]
             );
         }
+        br = null;
+        line = null;
         Main.printTimeDuration("Reading input + graph init");
 
         Node[] tmpNodeArray = new Node[N];
@@ -47,9 +52,10 @@ public class ReverseEdge implements Task {
         for (int i = 0; i < N; i++) {
             nodes[i].initNasl(tmpNodeArray);
         }
-        for (int i = N - 1; i >= 0; i--) {
-            nodes[i].initPred(tmpNodeArray);
-        }
+//        for (int i = N - 1; i >= 0; i--) {
+//            nodes[i].initPred(tmpNodeArray);
+//        }
+        nodes = null;
         Main.printTimeDuration("Init NASL and PRED");
 
         int weight;
@@ -66,6 +72,8 @@ public class ReverseEdge implements Task {
                 maxEdges[maxEdgesCounter++] = e;
             }
         }
+        edges = null;
+        tmpNodeArray = null;
         Main.printTimeDuration("C sets");
         Arrays.sort(maxEdges, 0, maxEdgesCounter - 1, Edge.getLexicographicalComparator());
         Main.printTimeDuration("C sets sort");
@@ -80,7 +88,7 @@ public class ReverseEdge implements Task {
 //            nodeState[i] = FRESH;
 //        }
         for (Node n : nodes) {
-            if (n.emptyPred()) {
+            if (n.predIsEmpty()) {
                 tmpArray[rootsCounter++] = n;
             }
         }
@@ -91,12 +99,11 @@ public class ReverseEdge implements Task {
 
     private void visitNode(Node node, int[] nodeState) {
 //        nodeState[node.getName()] = OPENED;
-        for (Node n : node.getNasl()) {
-            if (n == null) {
-                break;
-            }
-            if (nodeState[n.getName()] == FRESH) {
-                visitNode(n, nodeState);
+        int nodeNaslCount = node.getNaslCount();
+        Node[] nodeNasl = node.getNasl();
+        for (int i = 0; i < nodeNaslCount; i++) {
+            if (nodeState[nodeNasl[i].getName()] == FRESH) {
+                visitNode(nodeNasl[i], nodeState);
 //            } else if (nodeState[n.getName()] == OPENED) {
 //                throw new RuntimeException("This graph is not acyclic.");
             }
@@ -109,11 +116,7 @@ public class ReverseEdge implements Task {
         int weight = 0;
         int intersectionCount = getIntersection(e.getStart(), e.getTarget(), tmpArray);
         for (int i = 0; i < intersectionCount; i++) {
-            Node n = tmpArray[i];
-            if (n == null) {
-                break;
-            }
-            weight += n.getWeight();
+            weight += tmpArray[i].getWeight();
         }
         if (weight > 0) {
             weight += e.getStart().getWeight() + e.getTarget().getWeight();
@@ -123,14 +126,32 @@ public class ReverseEdge implements Task {
 
     private int getIntersection(Node parent, Node child, Node[] target) {
         int intersectionCounter = 0;
-        for (Node n : parent.getNasl()) {
-            if (n == null) {
-                break;
+        int parentNaslCount = parent.getNaslCount();
+        int childPredCount = child.getPredCount();
+//        if (parentNaslCount < childPredCount) {
+            Node[] parentNasl = parent.getNasl();
+            for (int i = 0; i < parentNaslCount; i++) {
+                if (child.hasPred(parentNasl[i])) {
+                    target[intersectionCounter++] = parentNasl[i];
+                }
             }
-            if (child.hasPred(n)) {
-                target[intersectionCounter++] = n;
-            }
-        }
+
+//        } else {
+//            Node[] parentNasl = parent.getNasl();
+//            for (int i = 0; i < parentNaslCount; i++) {
+//                if (child.hasPred(parentNasl[i])) {
+//                    target[intersectionCounter++] = parentNasl[i];
+//                }
+//            }
+//        }
+//        } else {
+//            Node[] childPred = child.getPred();
+//            for (int i = 0; i < childPredCount; i++) {
+//                if (child.hasNasl(childPred[i])) {
+//                    target[intersectionCounter++] = childPred[i];
+//                }
+//            }
+//        }
         return intersectionCounter;
     }
 
