@@ -9,7 +9,7 @@ import java.io.IOException;
 public class Main {
 
     private static long lastKnownTime = System.currentTimeMillis();
-    private static final boolean DEBUG = false;
+    private static final boolean DEBUG = true;
 
     /**
      * @param args the command line arguments

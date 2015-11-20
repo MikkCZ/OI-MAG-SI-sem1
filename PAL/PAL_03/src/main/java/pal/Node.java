@@ -6,7 +6,6 @@
 package pal;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -19,65 +18,79 @@ public class Node {
 
     private final int ID;
     private final List<Node> neighbors;
-    private final List<Node> children;
-    private String cert = null;
+    private final List<String> propagatedCerts;
+    private final List<Node> propagatedFrom;
+    private Node parent;
 
     public Node(int ID, int total) {
         this.ID = ID;
         this.neighbors = new ArrayList<>(total);
-        this.children = new ArrayList<>(total);
+        this.propagatedCerts = new ArrayList<>(total);
+        this.propagatedFrom = new ArrayList<>(total);
     }
 
     public void addNeighbor(Node neighbor) {
         neighbors.add(neighbor);
     }
 
-    public void removeNeighbor(Node neighbor) {
-        neighbors.remove(neighbor);
-        children.add(neighbor);
-    }
-    
-    public List<Node> getChildren() {
-        return children;
+    public Node getOnlyParent() {
+        return neighbors.get(0);
     }
 
-    public boolean isLeaf() {
-        return neighbors.size() == 1;
-    }
-
-    public Collection<Node> stripFromGraph() {
-        Collection<Node> leaves = new ArrayList<>(neighbors.size());
-        for (Node neighbor : neighbors) {
-            neighbor.removeNeighbor(this);
-            if (neighbor.isLeaf()) {
-                leaves.add(neighbor);
-            }
-        }
-        return leaves;
+    public int getDegree() {
+        return neighbors.size();
     }
 
     public String getCert() {
-        if (cert != null) {
-            return cert;
-        }
-        Collections.sort(children, Node.comparator);
+        return propagateCert();
+    }
+
+    public String propagateCert() {
+        Collections.sort(propagatedCerts);
         StringBuilder sb = new StringBuilder();
         sb.append("0");
-        for (Node child : children) {
-            sb.append(child.getCert());
+        for (String cert : propagatedCerts) {
+            sb.append(cert);
         }
         sb.append("1");
-        cert = sb.toString();
-        return cert;
+        String certToPropagate = sb.toString();
+        for (Node n : neighbors) {
+            if (!propagatedFrom.contains(n)) {
+                n.addPropagatedCert(certToPropagate, this);
+                this.parent = n;
+                break;
+            }
+        }
+        return certToPropagate;
     }
-    
-    public static final Comparator<Node> comparator = new LexicographicalCertComparator();
 
-    private static class LexicographicalCertComparator<T extends Node> implements Comparator<T> {
+    public void addPropagatedCert(String propagatedCert, Node child) {
+        propagatedCerts.add(propagatedCert);
+        propagatedFrom.add(child);
+    }
+
+    public Node getParent() {
+        return this.parent;
+    }
+
+    public void clearPropagated() {
+        this.propagatedCerts.clear();
+        this.propagatedFrom.clear();
+        this.parent = null;
+    }
+
+    @Override
+    public String toString() {
+        return Integer.toString(ID);
+    }
+
+    public static final Comparator<Node> IDComparator = new NodeIDComparator();
+
+    private static class NodeIDComparator<T extends Node> implements Comparator<T> {
 
         @Override
         public int compare(T arg0, T arg1) {
-            return arg0.getCert().compareTo(arg1.getCert());
+            return arg0.toString().compareTo(arg1.toString());
         }
     }
 
