@@ -7,7 +7,6 @@ package pal;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -28,6 +27,10 @@ public class Node {
         this.propagatedCerts = new ArrayList<>(total);
         this.propagatedFrom = new ArrayList<>(total);
     }
+    
+    public int getID() {
+        return ID;
+    }
 
     public void addNeighbor(Node neighbor) {
         neighbors.add(neighbor);
@@ -35,6 +38,10 @@ public class Node {
 
     public Node getOnlyParent() {
         return neighbors.get(0);
+    }
+
+    public boolean isLeaf() {
+        return neighbors.size() - propagatedFrom.size() == 1;
     }
 
     public int getDegree() {
@@ -61,6 +68,7 @@ public class Node {
                 break;
             }
         }
+        //System.out.println("" + ID + ": " + certToPropagate);
         return certToPropagate;
     }
 
@@ -77,21 +85,6 @@ public class Node {
         this.propagatedCerts.clear();
         this.propagatedFrom.clear();
         this.parent = null;
-    }
-
-    @Override
-    public String toString() {
-        return Integer.toString(ID);
-    }
-
-    public static final Comparator<Node> IDComparator = new NodeIDComparator();
-
-    private static class NodeIDComparator<T extends Node> implements Comparator<T> {
-
-        @Override
-        public int compare(T arg0, T arg1) {
-            return arg0.toString().compareTo(arg1.toString());
-        }
     }
 
 }

@@ -61,27 +61,26 @@ public class TreeIsomorphism implements Task {
             degreeCounterB[dg] = degreeCounterB[dg] + 1;
         }
         int degreeOfBParent = countDegreeOfBParent();
-        System.out.println(degreeOfBParent);
         Main.printTimeDuration("Degrees");
 
         String certA = getCert(leavesA);
         Main.printTimeDuration("Certificate of A");
 
-        List<Node> solution = new ArrayList<>(N);
+        List<Integer> solution = new ArrayList<>(N);
         for (Node n : leavesB) {
             if (n.getOnlyParent().getDegree() == degreeOfBParent) {
                 boolean canBeCut = tryCut(n, certA);
                 if (canBeCut) {
-                    solution.add(n);
+                    solution.add(n.getID());
                 }
             }
         }
-        Collections.sort(solution, Node.IDComparator);
+        Collections.sort(solution);
         Main.printTimeDuration("Try B cuts");
 
         StringBuilder sb = new StringBuilder();
-        for (Node n : solution) {
-            sb.append(n).append(" ");
+        for (int id : solution) {
+            sb.append(id).append(" ");
         }
         return sb.toString().trim();
     }
@@ -112,7 +111,7 @@ public class TreeIsomorphism implements Task {
         Set<Node> parents = new HashSet<>(N);
         for (Node n : leaves) {
             Node parent = n.getParent();
-            if (parent != null) {
+            if (parent != null && parent.isLeaf()) {
                 parents.add(parent);
             }
         }
