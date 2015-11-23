@@ -27,7 +27,7 @@ public class TaskTest {
 
     @Before
     public void setUp() {
-        //t = new Task();
+        t = new IncompleteAutomaton();
     }
 
     @After
