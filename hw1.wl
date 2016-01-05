@@ -10,14 +10,20 @@ oneStepRewrite[derivative[x]]:={1};
 
 (* Addition - "plus" *)
 (* Your code here... *)
+oneStepRewrite[plus[e_?PossibleZeroQ,f_]]:={f};
+oneStepRewrite[plus[e_,f_?PossibleZeroQ]]:={e};
 oneStepRewrite[plus[e_Integer,f_Integer]]:={Plus[e,f]};
 
 (* Multiplication - "times" *)
 (* Your code here... *)
+oneStepRewrite[times[e_?PossibleZeroQ,f_]]:={0};
+oneStepRewrite[times[e_,f_?PossibleZeroQ]]:={0};
 oneStepRewrite[times[e_Integer,f_Integer]]:={Times[e,f]};
 
 (* Power - "pow" *)
 (* Your code here... *)
+oneStepRewrite[pow[e_,0]]:={1};
+oneStepRewrite[pow[0,n_Integer?Positive]]:={1};
 oneStepRewrite[pow[e_,f_]]:={Power[e,f]};
 
 (* Derivation - "derivative" *)
