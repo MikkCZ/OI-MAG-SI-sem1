@@ -23,7 +23,7 @@ oneStepRewrite[times[e_Integer,f_Integer]]:={Times[e,f]};
 (* Power - "pow" *)
 (* Your code here... *)
 oneStepRewrite[pow[e_,0]]:={1};
-oneStepRewrite[pow[0,n_Integer?Positive]]:={1};
+oneStepRewrite[pow[0,n_Integer?Positive]]:={0};
 oneStepRewrite[pow[e_,f_]]:={Power[e,f]};
 
 (* Derivation - "derivative" *)
