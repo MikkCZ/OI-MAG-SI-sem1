@@ -10,15 +10,18 @@ oneStepRewrite[derivative[x]]:={1};
 
 (* Addition - "plus" *)
 (* Your code here... *)
-oneStepRewrite[derivative[plus[e_,f_]]]:={plus[derivative[e],derivative[f]]};
+oneStepRewrite[plus[e_,f_]]:={Plus[e,f]};
 
 (* Multiplication - "times" *)
 (* Your code here... *)
-oneStepRewrite[derivative[times[e_,f_]]]:={plus[times[e,derivative[f]],times[derivative[e],f]]};
+oneStepRewrite[times[e_,f_]]:={Times[e,f]};
 
 (* Power - "pow" *)
 (* Your code here... *)
-oneStopRewrite[derivative[pow[e_,n_]]]:={times[derivative[e],times[n,pow[e,n-1]]]};
+oneStepRewrite[pow[e_,f_]]:={Power[e,f]};
 
 (* Derivation - "derivative" *)
 (* Your code here... *)
+oneStepRewrite[derivative[plus[e_,f_]]]:={plus[derivative[e],derivative[f]]};
+oneStepRewrite[derivative[times[e_,f_]]]:={plus[times[e,derivative[f]],times[derivative[e],f]]};
+oneStopRewrite[derivative[pow[e_,n_]]]:={times[derivative[e],times[n,pow[e,n-1]]]};
