@@ -24,10 +24,10 @@ oneStepRewrite[times[e_Integer,f_Integer]]:={Times[e,f]};
 (* Your code here... *)
 oneStepRewrite[pow[e_,0]]:={1};
 oneStepRewrite[pow[0,n_Integer?Positive]]:={0};
-oneStepRewrite[pow[e_,f_]]:={Power[e,f]};
+oneStepRewrite[pow[e_?Positive,f_]]:={Power[e,f]};
 
 (* Derivation - "derivative" *)
 (* Your code here... *)
 oneStepRewrite[derivative[plus[e_,f_]]]:={plus[derivative[e],derivative[f]]};
 oneStepRewrite[derivative[times[e_,f_]]]:={plus[times[e,derivative[f]],times[derivative[e],f]]};
-oneStopRewrite[derivative[pow[e_,n_]]]:={times[derivative[e],times[n,pow[e,n-1]]]};
+oneStepRewrite[derivative[pow[e_,n_]]]:={times[derivative[e],times[n,pow[e,n-1]]]};
