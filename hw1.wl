@@ -10,11 +10,11 @@ oneStepRewrite[derivative[x]]:={1};
 
 (* Addition - "plus" *)
 (* Your code here... *)
-oneStepRewrite[plus[e_,f_]]:={Plus[e,f]};
+oneStepRewrite[plus[e_Integer,f_Integer]]:={Plus[e,f]};
 
 (* Multiplication - "times" *)
 (* Your code here... *)
-oneStepRewrite[times[e_,f_]]:={Times[e,f]};
+oneStepRewrite[times[e_Integer,f_Integer]]:={Times[e,f]};
 
 (* Power - "pow" *)
 (* Your code here... *)
