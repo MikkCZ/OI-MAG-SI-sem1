@@ -10,11 +10,14 @@ oneStepRewrite[derivative[x]]:={1}; (*3*)
 
 (* Addition - "plus" *)
 (* Your code here... *)
-oneStepRewrite[plus[e_?PossibleZeroQ,f_]]:={f}; (*11*)
-oneStepRewrite[plus[e_,f_?PossibleZeroQ]]:={e}; (*12*)
-oneStepRewrite[plus[e_Integer,f_Integer]]:={Plus[e,f]}; (*17*)
-oneStepRewrite[plus[e_,f_Integer]] := {plus[oneStepRewrite[e],f]}; (*6*)
-oneStepRewrite[plus[e_Integer,f_]] := {plus[e,oneStepRewrite[f]]}; (*7*)
+oneStepRewrite[plus[0,f_]]:={f}; (*11*)
+oneStepRewrite[plus[e_,0]]:={e}; (*12*)
+oneStepRewrite[plus[n_Integer,x]] := {};
+oneStepRewrite[plus[x,m_Integer]] := {};
+oneStepRewrite[plus[x,x]] := {};
+oneStepRewrite[plus[n_Integer,m_Integer]]:={Plus[n,m]}; (*17*)
+oneStepRewrite[plus[e_,m_Integer]] := plus[oneStepRewrite[e],m]; (*6*)
+oneStepRewrite[plus[n_Integer,f_]] := plus[n,oneStepRewrite[f]]; (*7*)
 oneStepRewrite[plus[e_,f_]] := Flatten[{
     plus[oneStepRewrite[e],f],
     plus[e,oneStepRewrite[f]]
@@ -24,11 +27,14 @@ oneStepRewrite[plus[e_,f_]] := Flatten[{
 (* Your code here... *)
 oneStepRewrite[times[1,f_]]:={f}; (*13*)
 oneStepRewrite[times[e_,1]]:={e}; (*14*)
-oneStepRewrite[times[e_?PossibleZeroQ,f_]]:={0}; (*15*)
-oneStepRewrite[times[e_,f_?PossibleZeroQ]]:={0}; (*16*)
-oneStepRewrite[times[e_Integer,f_Integer]]:={Times[e,f]}; (*18*)
-oneStepRewrite[times[e_,f_Integer]] := {times[oneStepRewrite[e],f]}; (*8*)
-oneStepRewrite[times[e_Integer,f_]] := {times[e,oneStepRewrite[f]]}; (*9*)
+oneStepRewrite[times[0,f_]]:={0}; (*15*)
+oneStepRewrite[times[e_,0]]:={0}; (*16*)
+oneStepRewrite[times[n_Integer,x]] := {};
+oneStepRewrite[times[x,m_Integer]] := {};
+oneStepRewrite[times[x,x]] := {};
+oneStepRewrite[times[n_Integer,m_Integer]]:={Times[n,m]}; (*18*)
+oneStepRewrite[times[e_,m_Integer]] := times[oneStepRewrite[e],m]; (*8*)
+oneStepRewrite[times[n_Integer,f_]] := times[n,oneStepRewrite[f]]; (*9*)
 oneStepRewrite[times[e_,f_]] := Flatten[{
     times[oneStepRewrite[e],f],
     times[e,oneStepRewrite[f]]
