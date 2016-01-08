@@ -4,6 +4,8 @@
    Implementation of BOS state. 
    The state is represented by the list of pairs { varName, value }.
 *)
+Clear[oneStep];
+Clear[typeOf];
 initState[] :=
     {}; 
 
@@ -21,23 +23,34 @@ get[state_, varName_String] :=
 
 (*Big-Step Operational Semantics*)
 
-(*2*)oneStep[\[Sigma]_,CBlock[{s___}]]:={(* YOUR CODE HERE *)};
+(*2*)oneStep[\[Sigma]_,CBlock[{s___}]]:=oneStep[\[Sigma],{s}];
 
-(*3*)oneStep[\[Sigma]_,{}]:={(* YOUR CODE HERE *)};
+(*3*)oneStep[\[Sigma]_,{}]:={\[Sigma],Null};
 
-(*4*)oneStep[\[Sigma]_,{c_,p___}]:={(* YOUR CODE HERE *)};
+(*4*)oneStep[\[Sigma]_,{c_,p___}]:=oneStep[oneStep[\[Sigma],c][[1]],{p}];
 
-(*5*)oneStep[\[Sigma]_,CDeclare[_,_]]:={(* YOUR CODE HERE *)};
+(*5*)oneStep[\[Sigma]_,CDeclare[type_,var_]]:={put[\[Sigma],var,Undefined],Null};
+(*6*)oneStep[s_,CWhile[e_,{stm___}]] /; oneStep[s,e][[2]]==0 := {oneStep[\[Sigma],{stm}][[1]],Null}
+(*7*)oneStep[s_,CWhile[e_,{stm___}]] := {oneStep[oneStep[[oneStep[s,e][[1]],{stm}]][[1]],CWhile[e,{stm}]][[1]],Null}
+(*8*)oneStep[s_,k_NumberQ]:={s,k}
+(*9*)oneStep[s_,var_String]:={s,get[s,var]}
+(*10*)oneStep[s_,CAssign[var_String,e_]]:=Module[
+    {tmp},
+    tmp=oneStep[s,e];
+    { put[tmp[[1]],var,tmp[[2]]] , tmp[[2]] }
+]
+
 
 
 (*Typing System*)
+(*37*)typeOf[g_,n_Integer]:="int"
+(*38*)typeOf[g_,d_Real]:="double"
+(*39*)typeOf[g_,CBlock[{stm___}]]:=typeOf[g,{stm}];
 
-(*39*)typeOf[\[CapitalGamma]_,CBlock[{stm___}]]:={(* YOUR CODE HERE *)};
+(*40*)typeOf[\[CapitalGamma]_,{}]:="command";
 
-(*40*)typeOf[\[CapitalGamma]_,{}]:={(* YOUR CODE HERE *)};
+(*41*)typeOf[g_,{n_,stm___}] /; typeOf[g,n]=!=$Failed :=typeOf[g,stm];
 
-(*41*)typeOf[\[CapitalGamma]_,{n_,stm___}]:={(* YOUR CODE HERE *)};
-
-(*42*)typeOf[\[CapitalGamma]_,CAssign[var_,e_]]:={(* YOUR CODE HERE *)};
-
-(*44*)typeOf[\[CapitalGamma]_,{a:CAssign[var_,e_],stm___}]:={(* YOUR CODE HERE *)};
+(*42*)typeOf[g_,CAssign[var_,e_]] /; typeOf[g,e]=="int"&&typeOf[g,var]=="double":="double";
+(*43*)typeOf[g_,CAssign[var_,e_]] /; typeOf[g,e]==typeOf[g,var]:=typeOf[g,e];
+(*44*)typeOf[g_,{a:CAssign[var_,e_],stm___}] /; typeOf[g,a]=!=$Failed :=typeOf[g,stm];
