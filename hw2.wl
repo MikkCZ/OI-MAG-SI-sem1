@@ -54,3 +54,7 @@ get[state_, varName_String] :=
 (*42*)typeOf[g_,CAssign[var_,e_]] /; typeOf[g,e]=="int"&&typeOf[g,var]=="double":="double";
 (*43*)typeOf[g_,CAssign[var_,e_]] /; typeOf[g,e]==typeOf[g,var]:=typeOf[g,e];
 (*44*)typeOf[g_,{a:CAssign[var_,e_],stm___}] /; typeOf[g,a]=!=$Failed :=typeOf[g,stm];
+(*45*)typeOf[g_,CDeclare[type_,var_]] /; get[g,var]==Null :="command"
+(*46*)
+
+typeOf[g_,x_]:=$Failed;
