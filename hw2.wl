@@ -1,6 +1,6 @@
 (* ::Package:: *)
 
-(* 
+(*
    Implementation of BOS state. 
    The state is represented by the list of pairs { varName, value }.
 *)
