@@ -4,8 +4,6 @@
    Implementation of BOS state. 
    The state is represented by the list of pairs { varName, value }.
 *)
-Clear[oneStep];
-Clear[typeOf];
 initState[] :=
     {}; 
 
@@ -22,7 +20,7 @@ get[state_, varName_String] :=
 
 
 (*Big-Step Operational Semantics*)
-
+Clear[oneStep];
 (*2*)oneStep[\[Sigma]_,CBlock[{s___}]]:=oneStep[\[Sigma],{s}];
 
 (*3*)oneStep[\[Sigma]_,{}]:={\[Sigma],Null};
@@ -41,8 +39,8 @@ get[state_, varName_String] :=
 ]
 
 
-
 (*Typing System*)
+Clear[typeOf];
 (*37*)typeOf[g_,n_Integer]:="int"
 (*38*)typeOf[g_,d_Real]:="double"
 (*39*)typeOf[g_,CBlock[{stm___}]]:=typeOf[g,{stm}];
@@ -55,6 +53,6 @@ get[state_, varName_String] :=
 (*43*)typeOf[g_,CAssign[var_,e_]] /; typeOf[g,e]==typeOf[g,var]:=typeOf[g,e];
 (*44*)typeOf[g_,{a:CAssign[var_,e_],stm___}] /; typeOf[g,a]=!=$Failed :=typeOf[g,stm];
 (*45*)typeOf[g_,CDeclare[type_,var_]] /; get[g,var]==Null :="command"
-(*46*)
+(*46*)typeOf[g_,{CDeclare[type_,var_],stm___}] /; typeOf[CDeclare[type,var]]=="command" := typeOf[put[g,var,Undefined],stm]
 
 typeOf[g_,x_]:=$Failed;
