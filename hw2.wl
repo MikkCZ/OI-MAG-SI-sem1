@@ -47,12 +47,16 @@ Clear[typeOf];
 
 (*40*)typeOf[\[CapitalGamma]_,{}]:="command";
 
-(*41*)typeOf[g_,{n_,stm___}] /; typeOf[g,n]=!=$Failed :=typeOf[g,stm];
+(*41*)typeOf[g_,{n_,stm___}] :=If[typeOf[g,n]=!=$Failed, typeOf[g,stm], $Failed];
 
 (*42*)typeOf[g_,CAssign[var_,e_]] /; typeOf[g,e]=="int"&&typeOf[g,var]=="double":="double";
 (*43*)typeOf[g_,CAssign[var_,e_]] /; typeOf[g,e]==typeOf[g,var]:=typeOf[g,e];
 (*44*)typeOf[g_,{a:CAssign[var_,e_],stm___}] /; typeOf[g,a]=!=$Failed :=typeOf[g,stm];
-(*45*)typeOf[g_,CDeclare[type_,var_]] /; get[g,var]==Null :="command"
-(*46*)typeOf[g_,{CDeclare[type_,var_],stm___}] /; typeOf[CDeclare[type,var]]=="command" := typeOf[put[g,var,Undefined],stm]
+(*45*)typeOf[g_,CDeclare[type_,var_]] /; get[g,ToString[var]]==Null :="command"
+(*46*)typeOf[g_,{CDeclare[type_,var_]}] := typeOf[g,CDeclare[type,var]];
+(*46*)typeOf[g_,{CDeclare[type_,var_],stm___}] /; typeOf[g,CDeclare[type,var]]=="command" := typeOf[put[g,ToString[var],Undefined],stm]
 
 typeOf[g_,x_]:=$Failed;
+
+
+
