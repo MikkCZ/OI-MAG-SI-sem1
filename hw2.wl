@@ -28,7 +28,7 @@ Clear[typeOf];
 (*38*)typeOf[g_,d_Real]:="double"
 (*39*)typeOf[g_,CBlock[{stm___}]]:=typeOf[g,{stm}];
 
-(*40*)typeOf[g_,{}]:="command";
+(*(*40*)typeOf[g_,{}]:="command";
 typeOf[g_,s_Symbol] /; get[g,ToString[s]]=!=Null :="command";
 
 (*41*)typeOf[g_,{n_,stm___}] :=If[typeOf[g,n]=!=$Failed, typeOf[g,stm], $Failed];
@@ -38,7 +38,7 @@ typeOf[g_,s_Symbol] /; get[g,ToString[s]]=!=Null :="command";
 (*44*)typeOf[g_,{a:CAssign[var_,e_],stm___}] /; typeOf[g,a]=!=$Failed :=typeOf[g,stm];
 (*45*)typeOf[g_,CDeclare[type_,var_]] /; get[g,ToString[var]]==Null :="command"
 (*46*)typeOf[g_,{CDeclare[type_,var_]}] := typeOf[g,CDeclare[type,var]];
-(*46*)typeOf[g_,{CDeclare[type_,var_],stm___}] /; typeOf[g,CDeclare[type,var]]=="command" := typeOf[put[g,ToString[var],ToString[type]],stm]
+(*46*)typeOf[g_,{CDeclare[type_,var_],stm___}] /; typeOf[g,CDeclare[type,var]]=="command" := typeOf[put[g,ToString[var],ToString[type]],stm]*)
 typeOf[e_,f_]:=$Failed;
 
 typeOf[{},-7]
@@ -58,3 +58,7 @@ typeOf[{},{CDeclare[double, x], CAssign[x, 1]}]
 typeOf[{},{CDeclare[double, x], CAssign[x, 1.2]}]
 typeOf[{},CAssign[x, 42]]
 typeOf[{},{CAssign[x, 42]}]
+
+
+
+
