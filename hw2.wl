@@ -313,12 +313,12 @@ typeOf[g_,s_String] /; get[g,s]=!=Null :="command";
     $Failed
 ];*)
 
-
 notList[s_List]:=False;
 notList[_]:=True;
 (*51*)typeOf[g_,COperator[unaryOp_,e_]] /; notList[e] := typeOf[g,e];
 
 typeOf[g_,COperator[binaryOp_,{e_Symbol,f_}]] /; get[g,ToString[e]]==typeOf[g,f] := typeOf[g,f];
+typeOf[g_,COperator[binaryOp_,{e_String,f_}]] /; get[g,e]==typeOf[g,f] := typeOf[g,f];
 (*53*)typeOf[g_,COperator[binaryOp_,{e_,f_}]] /; typeOf[g,e]=="double" && typeOf[g,f]=="int" := "double";
 (*54*)typeOf[g_,COperator[binaryOp_,{e_,f_}]] /; typeOf[g,e]=="int" && typeOf[g,f]=="double" := "double";
 (*55*)typeOf[g_,COperator[binaryOp_,{e_,f_}]] /; typeOf[g,e]==typeOf[g,f] := typeOf[g,e];
@@ -462,4 +462,6 @@ typeOf[{},CBlock[{CDeclare[int, i], CAssign[i, 10]}]]
 typeOf[{},CBlock[{CDeclare[int, i], CAssign[i, 0], CWhile[COperator[Less, {i, 10}], {CAssign[i, COperator[Plus, {i, 1}]]}]}]]
 typeOf[{},CBlock[{CDeclare[int, i], CDeclare[int, x], CAssign[i, 1], CAssign[x, 1], CWhile[COperator[Less, {i, 10}], {CAssign[i, COperator[Plus, {i, 1}]], CAssign[x, COperator[Times, {x, i}]]}]}]]
 *)
-typeOf[{},CBlock[{stm___}]]:=InputForm[{stm}]
+
+
+
