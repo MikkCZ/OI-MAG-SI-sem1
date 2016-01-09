@@ -43,7 +43,9 @@ oneStep[s_,k_Real]:={s,k}
 (*9*) oneStep[s_,var_]:={s,get[s,ToString[var]]}
 oneStep[s_,e_]:={s,e}
 oneStep[{},e_Symbol]:={{},Null}
+oneStep[{},s_String]:={{},Null}
 oneStep[s_,e_Symbol]:={s,get[s,ToString[e]]}
+oneStep[s_,e_String]:={s,get[s,e]}
 (*10*)oneStep[s_,CAssign[var_,e_]]:=Module[ {tmp}, tmp=oneStep[s,e]; {put[tmp[[1]],ToString[var],tmp[[2]]] , tmp[[2]]} ]
 (*11*)oneStep[s_,COperator[Minus,e_]]:=Module[ {tmp}, tmp=oneStep[s,e]; {tmp[[1]],-tmp[[2]]} ];
 (*12,13*)
@@ -145,8 +147,8 @@ If[IntegerQ[e1] && IntegerQ[e2],
 (*
 oneStep[{},4]
 oneStep[{},3.14]
-oneStep[{},x]
-oneStep[{{"x", 10}},x]
+oneStep[{},"x"]
+oneStep[{{"x", 10}},"x"]
 oneStep[{},{}]
 oneStep[{},CDeclare[int, x]]
 oneStep[{},{CDeclare[int, x]}]
