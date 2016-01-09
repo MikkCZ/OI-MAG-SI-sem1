@@ -41,7 +41,7 @@ typeOf[g_,s_Symbol] /; get[g,ToString[s]]=!=Null :="command";
 (*46*)typeOf[g_,{CDeclare[type_,var_],stm___}] /; typeOf[g,CDeclare[type,var]]=="command" := typeOf[put[g,ToString[var],ToString[type]],stm]*)
 typeOf[e_,f_]:=$Failed;
 
-typeOf[{},-7]
+(*typeOf[{},-7]
 typeOf[{},3.14]
 typeOf[{},x]
 typeOf[{},x]
@@ -57,8 +57,7 @@ typeOf[{},{CDeclare[int, x], CAssign[x, 1.2]}]
 typeOf[{},{CDeclare[double, x], CAssign[x, 1]}]
 typeOf[{},{CDeclare[double, x], CAssign[x, 1.2]}]
 typeOf[{},CAssign[x, 42]]
-typeOf[{},{CAssign[x, 42]}]
-
+typeOf[{},{CAssign[x, 42]}]*)
 
 
 
