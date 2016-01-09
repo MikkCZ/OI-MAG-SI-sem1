@@ -292,6 +292,7 @@ Clear[typeOf];
 
 (*40*)typeOf[g_,{}]:="command";
 typeOf[g_,s_Symbol] /; get[g,ToString[s]]=!=Null :="command";
+typeOf[g_,s_String] /; get[g,s]=!=Null :="command";
 
 (*41*)typeOf[g_,{n_,stm___}] :=If[typeOf[g,n]=!=$Failed, typeOf[g,stm], $Failed];
 
@@ -449,6 +450,9 @@ typeOf[{},CBlock[{CDeclare[int, i], CAssign[i, 10]}]]
 typeOf[{},CBlock[{CDeclare[int, i], CAssign[i, 0], CWhile[COperator[Less, {i, 10}], {CAssign[i, COperator[Plus, {i, 1}]]}]}]]
 typeOf[{},CBlock[{CDeclare[int, i], CDeclare[int, x], CAssign[i, 1], CAssign[x, 1], CWhile[COperator[Less, {i, 10}], {CAssign[i, COperator[Plus, {i, 1}]], CAssign[x, COperator[Times, {x, i}]]}]}]]
 *)
+
+
+
 
 
 
