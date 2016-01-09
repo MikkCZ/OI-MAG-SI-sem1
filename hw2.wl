@@ -294,19 +294,31 @@ Clear[typeOf];
 typeOf[g_,s_Symbol] /; get[g,ToString[s]]=!=Null :="command";
 typeOf[g_,s_String] /; get[g,s]=!=Null :="command";
 
-(*41*)typeOf[g_,{n_,stm___}] :=If[typeOf[g,n]=!=$Failed, typeOf[g,stm], $Failed];
+(*41*)typeOf[g_,{n_,stm___}] :=If[typeOf[g,n]=!=$Failed, typeOf[g,{stm}], $Failed];
 
 (*42*)typeOf[g_,CAssign[var_,e_]] /; get[g,ToString[var]]=="double"&&typeOf[g,e]=="int":="command";
 (*43*)typeOf[g_,CAssign[var_,e_]] /; get[g,ToString[var]]==typeOf[g,e]:="command";
-(*44*)typeOf[g_,{a:CAssign[var_,e_],stm___}] /; typeOf[g,a]=!=$Failed :=typeOf[g,stm];
+(*44*)typeOf[g_,{a:CAssign[var_,e_],stm___}] /; typeOf[g,a]=!=$Failed :=typeOf[g,{stm}];
 (*45*)typeOf[g_,CDeclare[type_,var_]] /; get[g,ToString[var]]==Null :="command"
 (*46*)typeOf[g_,{CDeclare[type_,var_]}] := typeOf[g,CDeclare[type,var]];
-(*46*)typeOf[g_,{CDeclare[type_,var_],stm___}] /; typeOf[g,CDeclare[type,var]]=="command" := typeOf[put[g,ToString[var],ToString[type]],stm]
+(*46*)typeOf[g_,{CDeclare[type_,var_],stm___}] /; typeOf[g,CDeclare[type,var]]=="command" := typeOf[put[g,ToString[var],ToString[type]],{stm}]
+(*47*)typeOf[g_,CWhile[e_,s_]] := If[
+    typeOf[g,e]=!=$Failed && typeOf[g,s]=="command",
+    "command",
+    $Failed
+];
+(*48*)(*typeOf[g_,{CWhile[e_,s_],{stm___}}] := If[
+    typeOf[g,CWhile[e,s]]\[Equal]"command" && typeOf[g,{stm}]\[Equal]"command",
+    "command",
+    $Failed
+];*)
+
 
 notList[s_List]:=False;
 notList[_]:=True;
 (*51*)typeOf[g_,COperator[unaryOp_,e_]] /; notList[e] := typeOf[g,e];
 
+typeOf[g_,COperator[binaryOp_,{e_Symbol,f_}]] /; get[g,ToString[e]]==typeOf[g,f] := typeOf[g,f];
 (*53*)typeOf[g_,COperator[binaryOp_,{e_,f_}]] /; typeOf[g,e]=="double" && typeOf[g,f]=="int" := "double";
 (*54*)typeOf[g_,COperator[binaryOp_,{e_,f_}]] /; typeOf[g,e]=="int" && typeOf[g,f]=="double" := "double";
 (*55*)typeOf[g_,COperator[binaryOp_,{e_,f_}]] /; typeOf[g,e]==typeOf[g,f] := typeOf[g,e];
@@ -450,9 +462,3 @@ typeOf[{},CBlock[{CDeclare[int, i], CAssign[i, 10]}]]
 typeOf[{},CBlock[{CDeclare[int, i], CAssign[i, 0], CWhile[COperator[Less, {i, 10}], {CAssign[i, COperator[Plus, {i, 1}]]}]}]]
 typeOf[{},CBlock[{CDeclare[int, i], CDeclare[int, x], CAssign[i, 1], CAssign[x, 1], CWhile[COperator[Less, {i, 10}], {CAssign[i, COperator[Plus, {i, 1}]], CAssign[x, COperator[Times, {x, i}]]}]}]]
 *)
-
-
-
-
-
-
