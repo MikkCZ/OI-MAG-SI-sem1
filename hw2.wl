@@ -25,10 +25,10 @@ get[state_, varName_String] :=
 (*Typing System*)
 Clear[typeOf];
 (*37*)typeOf[g_,n_Integer]:="int"
-(*38*)typeOf[g_,d_Real]:="double"
+(*(*38*)typeOf[g_,d_Real]:="double"
 (*39*)typeOf[g_,CBlock[{stm___}]]:=typeOf[g,{stm}];
 
-(*(*40*)typeOf[g_,{}]:="command";
+(*40*)typeOf[g_,{}]:="command";
 typeOf[g_,s_Symbol] /; get[g,ToString[s]]=!=Null :="command";
 
 (*41*)typeOf[g_,{n_,stm___}] :=If[typeOf[g,n]=!=$Failed, typeOf[g,stm], $Failed];
