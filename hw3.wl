@@ -19,9 +19,6 @@ get[state_, varName_String] :=
     ]; 
 
 
-
-
-
 Clear[DE];
 (* Value rules *)
 (*2*)DE[n_?NumberQ] := Function[env,n];
@@ -69,3 +66,4 @@ DE[compose[assign[x, 0], compose[assign[x, plus[value[x], 1]], epsilon]]][{}]
 DE[while[false, epsilon]][{{x, 8}}]
 DE[while[less[value[x], 10], assign[x, plus[value[x], 1]]]][{{x, 2}}]
 DE[while[less[value[i], 7], compose[assign[x, plus[value[x], value[x]]], assign[i, plus[value[i], 1]]]]][{{i, 0}, {x, 1}}]
+*)
