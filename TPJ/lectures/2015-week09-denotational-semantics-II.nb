@@ -1,0 +1,338 @@
+(* Content-type: application/vnd.wolfram.mathematica *)
+
+(*** Wolfram Notebook File ***)
+(* http://www.wolfram.com/nb *)
+
+(* CreatedBy='Mathematica 10.3' *)
+
+(*CacheID: 234*)
+(* Internal cache information:
+NotebookFileLineBreakTest
+NotebookFileLineBreakTest
+NotebookDataPosition[       158,          7]
+NotebookDataLength[     11544,        329]
+NotebookOptionsPosition[     10586,        291]
+NotebookOutlinePosition[     10920,        306]
+CellTagsIndexPosition[     10877,        303]
+WindowFrame->Normal*)
+
+(* Beginning of Notebook Content *)
+Notebook[{
+
+Cell[CellGroupData[{
+Cell["Denotational Semantics II", "Title",
+ CellChangeTimes->{{3.562580207057431*^9, 3.562580207502028*^9}, {
+   3.562580500477847*^9, 3.5625805110036173`*^9}, 3.584778545242773*^9, 
+   3.5847786002034273`*^9, {3.5847789048072853`*^9, 3.5847789135104103`*^9}, {
+   3.5853855890530167`*^9, 3.5853856117240458`*^9}, 3.5889125655553226`*^9, {
+   3.5898702720507603`*^9, 3.589870272864348*^9}, {3.590685521767815*^9, 
+   3.590685524030159*^9}, {3.593098476250904*^9, 3.593098485213539*^9}, {
+   3.593712829444811*^9, 3.593712833433337*^9}, {3.657863584310091*^9, 
+   3.657863584841964*^9}}],
+
+Cell["A4M36TPJ, WS 15/16, Week 9", "Subtitle",
+ CellChangeTimes->{{3.562580515300078*^9, 3.562580519995632*^9}, {
+   3.5847788979206457`*^9, 3.584778965749542*^9}, {3.585385597884557*^9, 
+   3.585385599388666*^9}, {3.588912568068153*^9, 3.588912568149396*^9}, {
+   3.589483027826898*^9, 3.5894830302671547`*^9}, {3.589483305954195*^9, 
+   3.589483307712418*^9}, {3.5898702824501343`*^9, 3.589870283063983*^9}, {
+   3.589878149973996*^9, 3.5898781520360003`*^9}, {3.5903124952456493`*^9, 
+   3.5903124953185368`*^9}, {3.593098488213394*^9, 3.593098488696657*^9}, {
+   3.59371196998096*^9, 3.593711970603238*^9}, {3.624608020487994*^9, 
+   3.624608023579996*^9}, {3.657267542837669*^9, 3.657267545088567*^9}, {
+   3.657863588569659*^9, 3.6578635902657843`*^9}, 3.657872600877398*^9}],
+
+Cell["Zden\[EHacek]k Buk, bukz1@fel.cvut.cz", "Subsubtitle",
+ CellChangeTimes->{{3.562581140905176*^9, 3.5625811745094767`*^9}, {
+   3.584778972611209*^9, 3.584779002416012*^9}, {3.584779115297949*^9, 
+   3.584779126024968*^9}, {3.5847791743688717`*^9, 3.58477919178168*^9}, 
+   3.584779568147327*^9, {3.587355242449349*^9, 3.587355243760145*^9}, 
+   3.587355336269288*^9}],
+
+Cell["\<\
+Dept. of Computer Science and Engineering
+Faculty of Electrical Engineering
+Czech Technical University in Prague\
+\>", "Subsubtitle",
+ CellChangeTimes->{{3.562581140905176*^9, 3.5625811745094767`*^9}, {
+   3.584778972611209*^9, 3.584779002416012*^9}, {3.584779115297949*^9, 
+   3.584779126024968*^9}, {3.5847791743688717`*^9, 3.58477919178168*^9}, 
+   3.584779568147327*^9, {3.587355242449349*^9, 3.587355243760145*^9}, 
+   3.587355336269288*^9, {3.587357048308634*^9, 3.587357053921727*^9}}],
+
+Cell["Last update: Nov 2015", "Subsubtitle",
+ CellChangeTimes->{{3.562581140905176*^9, 3.5625811745094767`*^9}, {
+   3.584778972611209*^9, 3.584779002416012*^9}, {3.584779115297949*^9, 
+   3.584779126024968*^9}, {3.5847791743688717`*^9, 3.58477919178168*^9}, 
+   3.584779568147327*^9, {3.587355242449349*^9, 3.587355243760145*^9}, 
+   3.587355336269288*^9, {3.587357048308634*^9, 3.5873570695359507`*^9}, {
+   3.58987028580278*^9, 3.589870286272058*^9}, {3.5930984935972652`*^9, 
+   3.593098494941304*^9}, {3.624608025747896*^9, 3.624608026699852*^9}, {
+   3.657267546880844*^9, 3.657267547040914*^9}}],
+
+Cell[CellGroupData[{
+
+Cell["Expression Language with Variables", "Section",
+ CellChangeTimes->{{3.5937128571021967`*^9, 3.593712860877297*^9}, {
+  3.6578637579338427`*^9, 3.6578637606274147`*^9}}],
+
+Cell[CellGroupData[{
+
+Cell["Syntax", "Subsection",
+ CellChangeTimes->{{3.593713073985423*^9, 3.593713075254302*^9}}],
+
+Cell["\<\
+Expr\t\t::= Num |
+\t\t\t\t\[EmptyUpTriangle]Expr |
+\t\t\t\tExpr \[EmptySquare] Expr |
+\t\t\t\t\[FivePointedStar]VarName
+Statement\t::= VarName = Expr
+Program\t\t::= Statement; Program\
+\>", "Program",
+ CellChangeTimes->{{3.593712887260584*^9, 3.593712933898182*^9}, {
+  3.593713017768235*^9, 3.593713067207267*^9}, {3.593713363716527*^9, 
+  3.5937133639636583`*^9}, {3.657864650934121*^9, 3.6578647656163893`*^9}}]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell["Implementation", "Subsection",
+ CellChangeTimes->{{3.5937135865816*^9, 3.593713588355454*^9}}],
+
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{
+   RowBox[{"Clear", "[", "DE", "]"}], ";"}], 
+  "\[IndentingNewLine]"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{
+   RowBox[{
+    RowBox[{"DE", "[", 
+     RowBox[{"n_", "?", "NumberQ"}], "]"}], " ", ":=", " ", 
+    RowBox[{"Function", "[", 
+     RowBox[{
+      RowBox[{"{", "env", "}"}], ",", "n"}], "]"}]}], ";"}], 
+  "\[IndentingNewLine]"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{
+   RowBox[{
+    RowBox[{"DE", "[", 
+     RowBox[{"triangle", "[", "e_", "]"}], "]"}], ":=", 
+    RowBox[{
+     RowBox[{"DE", "[", "triangle", "]"}], "[", 
+     RowBox[{"DE", "[", "e", "]"}], "]"}]}], ";", 
+   RowBox[{
+    RowBox[{"DE", "[", "triangle", "]"}], " ", ":=", " ", 
+    RowBox[{"Function", "[", 
+     RowBox[{
+      RowBox[{"{", "e", "}"}], ",", " ", 
+      RowBox[{"Function", "[", 
+       RowBox[{
+        RowBox[{"{", "env", "}"}], ",", " ", 
+        RowBox[{"-", 
+         RowBox[{"e", "[", "env", "]"}]}]}], "]"}]}], "]"}]}], ";"}], 
+  "\[IndentingNewLine]"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{
+   RowBox[{"DE", "[", 
+    RowBox[{"square", "[", 
+     RowBox[{"e1_", ",", "e2_"}], "]"}], "]"}], ":=", 
+   RowBox[{
+    RowBox[{"DE", "[", "square", "]"}], "[", 
+    RowBox[{
+     RowBox[{"DE", "[", "e1", "]"}], ",", 
+     RowBox[{"DE", "[", "e2", "]"}]}], "]"}]}], ";"}], "\[IndentingNewLine]", 
+
+ RowBox[{
+  RowBox[{
+   RowBox[{
+    RowBox[{"DE", "[", "square", "]"}], " ", ":=", " ", 
+    RowBox[{"Function", "[", 
+     RowBox[{
+      RowBox[{"{", 
+       RowBox[{"e1", ",", "e2"}], "}"}], ",", " ", 
+      RowBox[{"Function", "[", 
+       RowBox[{
+        RowBox[{"{", "env", "}"}], ",", " ", 
+        RowBox[{"e1", "[", "env", "]"}], ",", " ", 
+        RowBox[{"e2", "[", "env", "]"}]}], "]"}]}], "]"}]}], ";"}], 
+  "\[IndentingNewLine]"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{
+   RowBox[{"DE", "[", "varName_String", "]"}], " ", ":=", " ", "varName"}], 
+  ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{
+   RowBox[{"DE", "[", 
+    RowBox[{"star", "[", "varName_String", "]"}], "]"}], " ", ":=", 
+   RowBox[{
+    RowBox[{"DE", "[", "star", "]"}], "[", 
+    RowBox[{"DE", "[", "varName", "]"}], "]"}]}], 
+  ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{
+   RowBox[{
+    RowBox[{"DE", "[", "star", "]"}], " ", ":=", 
+    RowBox[{"Function", "[", 
+     RowBox[{
+      RowBox[{"{", "v", "}"}], ",", " ", 
+      RowBox[{"Function", "[", 
+       RowBox[{
+        RowBox[{"{", "env", "}"}], ",", " ", 
+        RowBox[{"env", "[", "v", "]"}]}], "]"}]}], "]"}]}], ";"}], 
+  "\[IndentingNewLine]"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{
+   RowBox[{"DE", "[", 
+    RowBox[{"assign", "[", 
+     RowBox[{"varName_String", ",", "e_"}], "]"}], "]"}], " ", ":=", 
+   RowBox[{
+    RowBox[{"DE", "[", "assign", "]"}], "[", 
+    RowBox[{
+     RowBox[{"DE", "[", "varName", "]"}], ",", 
+     RowBox[{"DE", "[", "e", "]"}]}], "]"}]}], ";"}], "\n", 
+ RowBox[{
+  RowBox[{
+   RowBox[{"DE", "[", "assign", "]"}], " ", ":=", " ", 
+   RowBox[{"Function", "[", 
+    RowBox[{
+     RowBox[{"{", 
+      RowBox[{"v", ",", "e"}], "}"}], ",", 
+     RowBox[{"Function", "[", 
+      RowBox[{
+       RowBox[{"{", "env", "}"}], ",", " ", 
+       RowBox[{"Append", "[", 
+        RowBox[{"env", ",", " ", 
+         RowBox[{"v", "\[Rule]", 
+          RowBox[{"e", "[", "env", "]"}]}]}], "]"}]}], "]"}]}], "]"}]}], 
+  ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{
+   RowBox[{"DE", "[", 
+    RowBox[{"compose", "[", 
+     RowBox[{"stm_", ",", "prg_"}], "]"}], "]"}], " ", ":=", " ", 
+   RowBox[{
+    RowBox[{"DE", "[", "compose", "]"}], "[", 
+    RowBox[{
+     RowBox[{"DE", "[", "stm", "]"}], ",", 
+     RowBox[{"DE", "[", "prg", "]"}]}], "]"}]}], ";"}], "\n", 
+ RowBox[{
+  RowBox[{
+   RowBox[{"DE", "[", "compose", "]"}], " ", ":=", " ", 
+   RowBox[{"Function", "[", 
+    RowBox[{
+     RowBox[{"{", 
+      RowBox[{"s", ",", "p"}], "}"}], ",", 
+     RowBox[{"Function", "[", 
+      RowBox[{
+       RowBox[{"{", "env", "}"}], ",", 
+       RowBox[{"p", "[", 
+        RowBox[{"s", "[", "env", "]"}], "]"}]}], "]"}]}], "]"}]}], 
+  ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{
+   RowBox[{
+    RowBox[{"DE", "[", "epsilon", "]"}], " ", ":=", " ", 
+    RowBox[{"Function", "[", 
+     RowBox[{
+      RowBox[{"{", "env", "}"}], ",", "env"}], "]"}]}], ";"}], 
+  " "}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"(*", " ", 
+   RowBox[{"#", "&"}], " ", "*)"}]}]}], "Input",
+ CellChangeTimes->{{3.593713671577456*^9, 3.593713886117029*^9}, {
+  3.657865147881732*^9, 3.6578654557652473`*^9}, {3.6578655210789223`*^9, 
+  3.657865547092677*^9}, {3.657865590687162*^9, 3.657865593885479*^9}, {
+  3.657872608592409*^9, 3.65787270863253*^9}, {3.657880559730625*^9, 
+  3.657880631283268*^9}, {3.657880687873054*^9, 3.6578806896657476`*^9}, {
+  3.657880838398491*^9, 3.657880843181224*^9}, {3.657883353521987*^9, 
+  3.657883439601304*^9}, {3.6578835904855413`*^9, 3.6578836180348*^9}, {
+  3.65788366144095*^9, 3.657883711820717*^9}, {3.657883794254815*^9, 
+  3.657883871695333*^9}, {3.65788394311307*^9, 3.657884037763978*^9}}],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"DE", "[", 
+   RowBox[{"assign", "[", 
+    RowBox[{"\"\<x\>\"", ",", "42"}], "]"}], "]"}], "[", 
+  RowBox[{"\[LeftAssociation]", "\[RightAssociation]"}], "]"}]], "Input",
+ CellChangeTimes->{{3.657865457845029*^9, 3.657865477302793*^9}, {
+  3.657884042576665*^9, 3.657884044348117*^9}}],
+
+Cell[BoxData[
+ RowBox[{"\[LeftAssociation]", 
+  RowBox[{"\<\"x\"\>", "\[Rule]", "42"}], "\[RightAssociation]"}]], "Output",
+ CellChangeTimes->{{3.657865465448504*^9, 3.657865477602343*^9}, 
+   3.6578655239147367`*^9, 3.6578655973884706`*^9, 3.657884047474329*^9}]
+}, Open  ]],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"DE", "[", 
+   RowBox[{"compose", "[", 
+    RowBox[{
+     RowBox[{"assign", "[", 
+      RowBox[{"\"\<x\>\"", ",", "42"}], "]"}], ",", 
+     RowBox[{"star", "[", "\"\<x\>\"", "]"}]}], "]"}], "]"}], "[", 
+  RowBox[{"\[LeftAssociation]", "\[RightAssociation]"}], "]"}]], "Input",
+ CellChangeTimes->{{3.657865598149543*^9, 3.657865635735228*^9}}],
+
+Cell[BoxData["42"], "Output",
+ CellChangeTimes->{{3.6578656239814167`*^9, 3.6578656362147093`*^9}, 
+   3.657884048806026*^9}]
+}, Open  ]]
+}, Open  ]]
+}, Open  ]]
+}, Open  ]]
+},
+WindowSize->{621, 716},
+WindowMargins->{{-9, Automatic}, {Automatic, -8}},
+FrontEndVersion->"10.2 for Linux x86 (64-bit) (July 29, 2015)",
+StyleDefinitions->"Default.nb"
+]
+(* End of Notebook Content *)
+
+(* Internal cache information *)
+(*CellTagsOutline
+CellTagsIndex->{}
+*)
+(*CellTagsIndex
+CellTagsIndex->{}
+*)
+(*NotebookFileOutline
+Notebook[{
+Cell[CellGroupData[{
+Cell[580, 22, 586, 8, 96, "Title"],
+Cell[1169, 32, 781, 10, 54, "Subtitle"],
+Cell[1953, 44, 373, 5, 31, "Subsubtitle"],
+Cell[2329, 51, 502, 9, 75, "Subsubtitle"],
+Cell[2834, 62, 602, 8, 31, "Subsubtitle"],
+Cell[CellGroupData[{
+Cell[3461, 74, 174, 2, 67, "Section"],
+Cell[CellGroupData[{
+Cell[3660, 80, 94, 1, 47, "Subsection"],
+Cell[3757, 83, 424, 10, 128, "Program"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[4218, 98, 100, 1, 47, "Subsection"],
+Cell[4321, 101, 5062, 149, 605, "Input"],
+Cell[CellGroupData[{
+Cell[9408, 254, 319, 7, 32, "Input"],
+Cell[9730, 263, 263, 4, 32, "Output"]
+}, Open  ]],
+Cell[CellGroupData[{
+Cell[10030, 272, 376, 9, 32, "Input"],
+Cell[10409, 283, 125, 2, 65, "Output"]
+}, Open  ]]
+}, Open  ]]
+}, Open  ]]
+}, Open  ]]
+}
+]
+*)
+
+(* End of internal cache information *)
