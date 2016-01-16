@@ -1,0 +1,44 @@
+oneStepRewrite[42]
+oneStepRewrite[x]
+{0}
+{1}
+{4}
+oneStepRewrite[times[2, x]]
+oneStepRewrite[times[x, 2]]
+oneStepRewrite[times[x, x]]
+{0}
+{0}
+{0}
+{0}
+{plus[times[2, derivative[2]], times[derivative[2], 2]]}
+{plus[times[2, derivative[x]], times[derivative[2], x]]}
+{plus[times[x, derivative[2]], times[derivative[x], 2]]}
+{plus[times[x, derivative[x]], times[derivative[x], x]]}
+{4}
+oneStepRewrite[plus[2, x]]
+oneStepRewrite[plus[x, 2]]
+oneStepRewrite[plus[x, x]]
+{2}
+{2}
+{x}
+{x}
+{plus[derivative[2], derivative[2]]}
+{plus[derivative[2], derivative[x]]}
+{plus[derivative[x], derivative[2]]}
+{plus[derivative[x], derivative[x]]}
+{plus[times[plus[1, x], derivative[x]], times[derivative[plus[1, x]], x]]}
+{plus[times[plus[1, x], 1], times[derivative[plus[1, x]], x]], plus[times[plus[1, x], derivative[x]], times[plus[derivative[1], derivative[x]], x]]}
+{1}
+{1}
+{0}
+oneStepRewrite[pow[0, -1]]
+{1}
+oneStepRewrite[pow[plus[x, 42], 2]]
+oneStepRewrite[pow[plus[times[x, 2], 42], 2]]
+{times[derivative[plus[times[x, 2], 42]], times[2, pow[plus[times[x, 2], 42], 1]]]}
+{times[derivative[0], times[0, pow[0, -1]]]}
+{times[derivative[1], times[0, pow[1, -1]]]}
+{times[derivative[0], times[1, pow[0, 0]]]}
+{times[derivative[0], times[-1, pow[0, -2]]]}
+{times[derivative[x], times[0, pow[x, -1]]]}
+{times[x, 0]}
