@@ -38,7 +38,7 @@ public class WordWithGivenPrefix implements Task {
 
         int ID;
         for (int i = 0; i < N; i++) {
-            line = br.readLine();
+            line = br.readLine().trim();
             lineArray = line.split(" ");
             ID = Integer.parseInt(lineArray[0]);
             if (states[ID] == null) {
