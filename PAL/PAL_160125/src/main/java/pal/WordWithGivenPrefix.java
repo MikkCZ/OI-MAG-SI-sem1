@@ -39,7 +39,7 @@ public class WordWithGivenPrefix implements Task {
         int ID;
         for (int i = 0; i < N; i++) {
             line = br.readLine().trim();
-            lineArray = line.split(" ");
+            lineArray = line.split("\\s+");
             ID = Integer.parseInt(lineArray[0]);
             if (states[ID] == null) {
                 states[ID] = new State(ID, S);
@@ -47,12 +47,14 @@ public class WordWithGivenPrefix implements Task {
             if ("F".equals(lineArray[1].toUpperCase())) {
                 states[ID].setFinal();
             }
+//            System.out.println("Add Followers");
+//            System.out.println(Arrays.toString(lineArray));
             states[ID].addFollowers(lineArray, states);
         }
         
-        for(State s : states) {
-            s.printLine();
-        }
+//        for(State s : states) {
+//            System.out.println(s.toString());
+//        }
 
         Main.printTimeDuration("Init states");
 
@@ -62,8 +64,8 @@ public class WordWithGivenPrefix implements Task {
         line = null;
         lineArray = null;
 
-        int min = Integer.MAX_VALUE;
-        int max = Integer.MIN_VALUE;
+        int min = 1000000;
+        int max = 0;
         State start = states[0];
         Set<State> startStatesForPrefix = start.getStatesFor(P, 0);
         for (State s : startStatesForPrefix) {

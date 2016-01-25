@@ -57,6 +57,10 @@ public class State {
             }
             charID = charToAlphabetIndex(lineArray[i].toLowerCase().toCharArray()[0]);
             while (true) {
+                if (lineArray[i].isEmpty()) {
+                    i++;
+                    continue;
+                }
                 try {
                     followerID = Integer.decode(lineArray[i + 1]);
                     this.addFollower(charID, followerID, states);
@@ -80,6 +84,7 @@ public class State {
             tmp.add(this);
             return tmp;
         }
+//        System.out.println("" + ID + " " + P.substring(index, P.length()));
         Set<State> toReturn = new HashSet<>(S);
         char c = P.charAt(index);
         Collection<State> cFollowers = followers[charToAlphabetIndex(c)];
@@ -103,7 +108,7 @@ public class State {
         }
         for (State follower : allFollowers) {
             int[] followerMinAndMax = follower.getMinAndMax();
-            if (followerMinAndMax[MIN_INDEX] < min) {
+            if (!this.isFinal && followerMinAndMax[MIN_INDEX] < min) {
                 min = followerMinAndMax[MIN_INDEX] + 1;
             }
             if (followerMinAndMax[MAX_INDEX] >= max) {
@@ -113,6 +118,7 @@ public class State {
         this.minAndMax = new int[2];
         this.minAndMax[MIN_INDEX] = min;
         this.minAndMax[MAX_INDEX] = max;
+//        System.out.println("" + ID + " " + min + " " + max);
         return this.minAndMax;
     }
 
@@ -124,7 +130,8 @@ public class State {
 //        State follower = followers[followerID];
 //        return follower.getOutputStateFor(ps, index + 1);
 //    }
-    public void printLine() {
+    @Override
+    public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append(ID).append(" ");
         sb.append(isFinal).append(" ");
@@ -136,7 +143,7 @@ public class State {
             }
             sb.append(",");
         }
-        System.out.println(sb.toString());
+        return sb.toString();
     }
 
 }

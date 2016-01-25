@@ -37,7 +37,6 @@ public class TaskTest {
 
     private void testFile(String fName, InputStream is, String output) throws IOException {
         assertEquals("Wrong solution for " + fName + ".", output, t.eval(is));
-        System.out.println(fName);
     }
 
     /**
